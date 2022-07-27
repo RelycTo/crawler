@@ -1,4 +1,4 @@
-﻿using crawler.Parsers;
+﻿using crawler.Services;
 
 namespace Crawler.Tests
 {
@@ -7,7 +7,7 @@ namespace Crawler.Tests
         [Fact]
         public void GetLinks_EmptyContent_EmptyCollection()
         {
-            var parser = new SiteMapXMLParser();
+            var parser = new XmlLinkParser();
 
             var actual = parser.GetLinks(string.Empty);
 
@@ -17,7 +17,7 @@ namespace Crawler.Tests
         [Fact]
         public void GetLinks_XMLHasNoLinks_EmptyCollection()
         {
-            var parser = new SiteMapXMLParser();
+            var parser = new XmlLinkParser();
 
             var actual = parser.GetLinks(@"<sitemapindex xmlns=""http://www.google.com/schemas/sitemap/0.84""><sitemap></sitemap></sitemapindex>");
 
@@ -27,7 +27,7 @@ namespace Crawler.Tests
         [Fact]
         public void GetLinks_XMLHasLinks_CollectionWhichContainsNumberOfLinks()
         {
-            var parser = new SiteMapXMLParser();
+            var parser = new XmlLinkParser();
 
             var actual = parser.GetLinks(@"<sitemapindex xmlns=""http://www.google.com/schemas/sitemap/0.84""><sitemap><loc>www.test.com</loc></sitemap></sitemapindex>")
                 .ToArray();

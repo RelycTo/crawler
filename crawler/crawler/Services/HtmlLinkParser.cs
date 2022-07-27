@@ -1,10 +1,11 @@
 ﻿using HtmlAgilityPack;
 
-namespace crawler.Parsers;
+namespace crawler.Services;
 
-public class HtmlParser
+public class HtmlLinkParser: ILinkParser
 {
     private const string Href = "href";
+    
     public IEnumerable<string> GetLinks(string content)
     {
         if (string.IsNullOrWhiteSpace(content))

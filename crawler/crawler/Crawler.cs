@@ -1,5 +1,6 @@
-﻿using System.Collections.Concurrent;
-using crawler.Parsers;
+﻿using System.Net.Mime;
+using crawler.Models;
+using crawler.Services;
 
 namespace crawler;
 
@@ -7,59 +8,45 @@ internal class Crawler
 {
     private readonly string _url;
     private readonly HttpClient _httpClient;
-    private readonly HtmlParser _htmlParser;
-    private readonly SiteMapXMLParser _xmlParser;
-    private HashSet<string> _processedLinks;
-    private readonly ConcurrentQueue<string> _queue;
 
-    private readonly HashSet<string> _acceptablePrefixes = new()
-    {
-        "http:",
-        "https:"
-    };
-
-    public Crawler(string url, HttpClient client, HtmlParser htmlParser, SiteMapXMLParser xmlParser)
+    public Crawler(string url, HttpClient client)
     {
         _url = url;
         _httpClient = client;
-        _htmlParser = htmlParser;
-        _xmlParser = xmlParser;
-        _queue = new ConcurrentQueue<string>();
-        _processedLinks = new HashSet<string>();
     }
 
     public async Task Crawl()
     {
-        _queue.Enqueue(_url);
+        var crawlResults = await ProcessLinks();
+        var siteMapLinks = (await GetSiteMapLinks()).ToArray();
 
-        var currentLink = string.Empty;
-        while (_queue.TryDequeue(out currentLink))
+        var results = new Dictionary<string, ResultItem>();
+
+        foreach (var link in crawlResults)
         {
-            if (!IsLinkAcceptable(currentLink, _url, _acceptablePrefixes) || _processedLinks.Contains(currentLink))
-                continue;
-            var response = await _httpClient.GetStringAsync(currentLink);
-            _processedLinks.Add(currentLink);
-            var links = _htmlParser.GetLinks(response);
-            foreach (var link in links)
-            {
-                if(_processedLinks.Contains(link))
-                    continue;
-                _queue.Enqueue(link);
-            }
+            results[link.Url] = link;
+            if (siteMapLinks.Contains(link.Url))
+                results[link.Url].UpdateFoundBySiteMapFlag(true);
         }
-        //var siteMapLinks = _xmlParser.GetLinks(response).ToArray();
+
+        var linksToProcess = siteMapLinks.Where(l => !results.ContainsKey(l));
+        var loader = new LinkLoader(_httpClient, new HtmlLinkParser(), new[] { MediaTypeNames.Text.Xml });
+        var processor = new LinkProcessor(loader, linksToProcess, results, true);
+        var r = await processor.Process(_url);
+
     }
 
-    private static bool IsLinkAcceptable(string link, string baseUrl, IEnumerable<string> prefixes)
+    private async Task<IEnumerable<ResultItem>> ProcessLinks()
     {
-        return !string.IsNullOrWhiteSpace(link) &&
-               IsAcceptablePrefix(link, prefixes) &&
-               IsInternalLink(new Uri(link), new Uri(baseUrl));
+        var loader = new LinkLoader(_httpClient, new HtmlLinkParser(), new[] { MediaTypeNames.Text.Xml });
+        var processor = new LinkProcessor(loader, new []{_url});
+        return await processor.Process(_url);
     }
 
-    private static bool IsAcceptablePrefix(string link, IEnumerable<string> prefixes) =>
-        prefixes.Any(link.StartsWith);
-
-    private static bool IsInternalLink(Uri checkUri, Uri baseUri) =>
-        checkUri.Host == baseUri.Host;
+    private async Task<IEnumerable<string>> GetSiteMapLinks()
+    {
+        var loader = new LinkLoader(_httpClient, new XmlLinkParser(), new[] { MediaTypeNames.Text.Html });
+        var processor = new SiteMapProcessor(loader);
+        return await processor.Process(_url + "/sitemap.xml");
+    }
 }
