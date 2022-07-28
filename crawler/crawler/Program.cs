@@ -2,5 +2,7 @@
 
 using crawler;
 
-var crawler = new Crawler("https://google.com", new HttpClient());
-await crawler.Crawl();
+
+var ui = new CrawlerUI();
+await ui.RunAsync();
+

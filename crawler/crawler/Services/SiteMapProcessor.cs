@@ -1,78 +1,34 @@
-﻿using System.Collections.Concurrent;
-using crawler.Extensions;
+﻿using crawler.Extensions;
+using crawler.Models;
 
 namespace crawler.Services;
 
-public class SiteMapProcessor
+public class SiteMapProcessor: LinkProcessor
 {
-    private readonly LinkLoader _linkLoader;
-    private readonly ConcurrentDictionary<string, string> _processedLinks;
-    private readonly ConcurrentQueue<string> _queue;
-    private readonly int _maxThreads;
-
-    public SiteMapProcessor(LinkLoader linkLoader, int maxThreads = 4)
+    public SiteMapProcessor(PageLoader pageLoader, ILinkParser parser, IEnumerable<Uri> links, int maxThreads) : base(pageLoader, parser, links, maxThreads)
     {
-        _linkLoader = linkLoader;
-        _maxThreads = maxThreads;
-        _processedLinks = new ConcurrentDictionary<string, string>();
-        _queue = new ConcurrentQueue<string>();
     }
 
-    public async Task<IEnumerable<string>> Process(string url)
-    {
-        _queue.Enqueue(url);
-        var tasks = new List<Task>();
-        for (var n = 0; n < _maxThreads; n++)
-        {
-            tasks.Add(Task.Run(async () =>
-            {
-                while (_queue.TryDequeue(out var currentLink))
-                {
-                    if (!UrlExtensions.IsLinkAcceptable(currentLink, url) ||
-                        _processedLinks.ContainsKey(currentLink))
-                        continue;
-                    await ProcessLink(currentLink);
-                }
-            }));
-        }
-
-        await Task.WhenAll(tasks);
-
-        return _processedLinks.Values;
-    }
-
-    private async Task ProcessLink(string link)
-    {
-        if (!link.EndsWith(".xml"))
-        {
-            _processedLinks.TryAdd(link, link);
-        }
-        else
-        {
-            var (duration, links) = await _linkLoader.GetLinks(link);
-            if (duration >= 0)
-            {
-                _processedLinks.TryAdd(link, link);
-                PopulateLinks(links);
-            }
-            else
-            {
-                _processedLinks.TryAdd(link, link);
-            }
-        }
-    }
- 
-    private void PopulateLinks(IEnumerable<string> links)
+    protected override void PopulateLinks(IEnumerable<string> links, Uri baseUri)
     {
         foreach (var link in links)
         {
-            if (_processedLinks.ContainsKey(link))
-                continue;
-            if (link.EndsWith(".xml"))
-                _queue.Enqueue(link);
-            else
+            try
             {
-                _processedLinks.TryAdd(link, link);
+                var uri = new Uri(link.FixLink(baseUri));
+                if (ProcessedLinks.ContainsKey(uri))
+                    continue;
+                if (!link.EndsWith(".xml"))
+                {
+                    ProcessedLinks.TryAdd(uri, new CrawlItem(uri.AbsoluteUri, -1));
+                    continue;
+                }
+
+                Queue.Enqueue(uri);
+            }
+            catch (UriFormatException e)
+            {
+                Console.WriteLine(e);
             }
         }
     }

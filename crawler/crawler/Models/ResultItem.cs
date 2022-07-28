@@ -2,33 +2,18 @@
 {
     public class ResultItem
     {
-        public ResultItem(string url, long duration, bool foundBySiteMap)
+        public ResultItem(string url, long duration, bool isFoundByCrawler, bool isFoundBySiteMap)
         {
             Url = url;
-            Uri = new Uri(url);
             Duration = duration;
-            FoundByCrawler = !foundBySiteMap;
-            FoundBySiteMap = foundBySiteMap;
-            Errors = Array.Empty<string>();
-        }
-
-        public ResultItem(string url, bool foundBySiteMap, params string[] errors)
-        {
-            Url = url;
-            Uri = new Uri(url);
-            Errors = errors;
-            FoundByCrawler = !foundBySiteMap;
-            FoundBySiteMap = foundBySiteMap;
+            IsFoundByCrawler = isFoundByCrawler;
+            IsFoundBySiteMap = isFoundBySiteMap;
         }
 
         public string Url { get; }
-        public Uri Uri { get; }
         public long Duration { get; }
-        public string[] Errors { get; }
-
-        public bool FoundByCrawler { get; }
-        public bool FoundBySiteMap { get; private set; }
-
-        public void UpdateFoundBySiteMapFlag(bool value) => FoundBySiteMap = value;
+        public bool IsFoundByCrawler { get; }
+        public bool IsFoundBySiteMap { get; set; }
+        public bool IsProcessed => Duration > 0;
     }
 }

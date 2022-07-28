@@ -1,52 +1,33 @@
-﻿using System.Net.Mime;
-using crawler.Models;
+﻿using crawler.Models;
 using crawler.Services;
 
 namespace crawler;
 
 internal class Crawler
 {
-    private readonly string _url;
-    private readonly HttpClient _httpClient;
+    private readonly PageLoader _loader;
+    private readonly ILinkParser _parser;
+    private readonly int _maxThreads;
 
-    public Crawler(string url, HttpClient client)
+    public Crawler(PageLoader loader, ILinkParser parser, int maxThreads)
     {
-        _url = url;
-        _httpClient = client;
+        _loader = loader;
+        _maxThreads = maxThreads;
+        _parser = parser;
     }
 
-    public async Task Crawl()
+    public async Task<IEnumerable<CrawlItem>> CrawlAsync(Uri uri, CancellationToken token = default)
     {
-        var crawlResults = await ProcessLinks();
-        var siteMapLinks = (await GetSiteMapLinks()).ToArray();
-
-        var results = new Dictionary<string, ResultItem>();
-
-        foreach (var link in crawlResults)
-        {
-            results[link.Url] = link;
-            if (siteMapLinks.Contains(link.Url))
-                results[link.Url].UpdateFoundBySiteMapFlag(true);
-        }
-
-        var linksToProcess = siteMapLinks.Where(l => !results.ContainsKey(l));
-        var loader = new LinkLoader(_httpClient, new HtmlLinkParser(), new[] { MediaTypeNames.Text.Xml });
-        var processor = new LinkProcessor(loader, linksToProcess, results, true);
-        var r = await processor.Process(_url);
-
+        var processor = CreateProcessor(_loader, _parser, new[] { uri }, _maxThreads);
+        return await processor.ProcessAsync(uri, token);
     }
 
-    private async Task<IEnumerable<ResultItem>> ProcessLinks()
+    //TODO: should be moved out into processors factory
+    private static LinkProcessor CreateProcessor(PageLoader loader, ILinkParser parser, IEnumerable<Uri> links,
+        int threadCount)
     {
-        var loader = new LinkLoader(_httpClient, new HtmlLinkParser(), new[] { MediaTypeNames.Text.Xml });
-        var processor = new LinkProcessor(loader, new []{_url});
-        return await processor.Process(_url);
-    }
-
-    private async Task<IEnumerable<string>> GetSiteMapLinks()
-    {
-        var loader = new LinkLoader(_httpClient, new XmlLinkParser(), new[] { MediaTypeNames.Text.Html });
-        var processor = new SiteMapProcessor(loader);
-        return await processor.Process(_url + "/sitemap.xml");
+        return parser is HtmlLinkParser
+            ? new LinkProcessor(loader, parser, links, threadCount)
+            : new SiteMapProcessor(loader, parser, links, threadCount);
     }
 }

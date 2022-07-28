@@ -2,27 +2,37 @@
 
 public static class UrlExtensions
 {
-    private static readonly HashSet<string> AcceptablePrefixes = new()
+    public static bool IsAcceptableSchema(this Uri uri) =>
+        uri.Scheme is "http" or "https";
+
+    public static bool IsLinkAcceptable(Uri uri, Uri baseUri)
     {
-        "http:",
-        "https:"
-    };
+        return uri.IsAcceptableSchema() &&
+               IsInternalLink(uri, baseUri);
+    }
 
-    public static string FixUrl(this string url) => url.Replace("www.", "");
-
-    public static bool IsAcceptablePrefix(this string link, IEnumerable<string> prefixes) =>
-        prefixes.Any(link.StartsWith);
-
-    public static bool IsLinkAcceptable(string link, string baseUrl) =>
-        IsLinkAcceptable(link, baseUrl, AcceptablePrefixes);
-    public static bool IsLinkAcceptable(string link, string baseUrl, IEnumerable<string> prefixes)
+    public static string FixLink(this string link, Uri baseUri)
     {
-        return !string.IsNullOrWhiteSpace(link) &&
-               link.IsAcceptablePrefix(prefixes) &&
-               IsInternalLink(new Uri(link.FixUrl()), new Uri(baseUrl.FixUrl()));
+        link = RemoveAnchor(link);
+            
+        /*
+        if(baseUri.AbsoluteUri.EndsWith(".xml"))
+            return baseUri.Scheme + "://" + baseUri.Host.TrimEnd('/') + link;
+        */
+        if(link.StartsWith('.'))
+            return baseUri.AbsoluteUri + link.TrimEnd('.');
+        if (!link.Contains("http") && !link.Contains("https"))
+            return baseUri.Scheme + "://" + baseUri.Host + link.TrimStart('.');
+        return link;
+    }
+
+    private static string RemoveAnchor(string link)
+    {
+        var anchorIndex = link.IndexOf('#');
+        return anchorIndex == -1 ? link : link[..(anchorIndex - 1)];
     }
 
     private static bool IsInternalLink(Uri checkUri, Uri baseUri) =>
-        checkUri.Host.TrimEnd('/') == baseUri.Host.TrimEnd('/');
+        checkUri.Host == baseUri.Host;
 }
 
