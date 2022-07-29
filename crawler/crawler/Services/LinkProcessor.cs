@@ -8,8 +8,8 @@ namespace crawler.Services;
 public class LinkProcessor
 {
     private readonly PageLoader _pageLoader;
-    protected readonly ILinkParser _parser;
-    protected readonly ConcurrentDictionary<Uri, CrawlItem> ProcessedLinks;
+    private readonly ILinkParser _parser;
+    protected readonly ConcurrentDictionary<string, CrawlItem> ProcessedLinks;
     protected readonly ConcurrentQueue<Uri> Queue;
     private readonly int _maxThreads;
 
@@ -17,7 +17,7 @@ public class LinkProcessor
     {
         _pageLoader = pageLoader;
         Queue = new ConcurrentQueue<Uri>(links);
-        ProcessedLinks = new ConcurrentDictionary<Uri, CrawlItem>();
+        ProcessedLinks = new ConcurrentDictionary<string, CrawlItem>();
         _maxThreads = maxThreads;
         _parser = parser;
     }
@@ -30,10 +30,11 @@ public class LinkProcessor
         {
             tasks.Add(Task.Run(async () =>
             {
+                await Task.Delay(1000, token);
                 while (Queue.TryDequeue(out var currentLink))
                 {
-                    if (!UrlExtensions.IsLinkAcceptable(currentLink, uri) ||
-                        ProcessedLinks.ContainsKey(currentLink))
+                    if (!currentLink.IsLinkAcceptable(uri) ||
+                        ProcessedLinks.ContainsKey(currentLink.AbsoluteUri))
                         continue;
                     await ProcessLinkAsync(currentLink, token);
                 }
@@ -51,7 +52,7 @@ public class LinkProcessor
 
         if (response.Duration >= 0)
         {
-            ProcessedLinks.TryAdd(uri, new CrawlItem(uri.AbsoluteUri, response.Duration));
+            ProcessedLinks.TryAdd(uri.AbsoluteUri, new CrawlItem(uri.AbsoluteUri, response.Duration));
             if (response.StatusCode == HttpStatusCode.OK)
             {
                 var links = _parser.GetLinks(response.Content);
@@ -60,7 +61,7 @@ public class LinkProcessor
         }
         else
         {
-            ProcessedLinks.TryAdd(uri, new CrawlItem(uri.AbsoluteUri, response.StatusCode.ToString()));
+            ProcessedLinks.TryAdd(uri.AbsoluteUri, new CrawlItem(uri.AbsoluteUri, response.StatusCode.ToString()));
         }
     }
 
@@ -70,8 +71,12 @@ public class LinkProcessor
         {
             try
             {
-                var uri = new Uri(link.FixLink(baseUri));
-                if (ProcessedLinks.ContainsKey(uri) || link.EndsWith(".xml"))
+                var restored = link.RestoreAbsolutePath(baseUri);
+                if(!Uri.IsWellFormedUriString(restored, UriKind.Absolute))
+                    continue;
+                var uri = new Uri(restored);
+                if (ProcessedLinks.ContainsKey(uri.AbsoluteUri.TrimEnd('/'))
+                    || link.EndsWith(".xml") || !uri.IsLinkAcceptable(baseUri))
                     continue;
                 Queue.Enqueue(uri);
             }

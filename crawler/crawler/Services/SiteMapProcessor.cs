@@ -15,12 +15,15 @@ public class SiteMapProcessor: LinkProcessor
         {
             try
             {
-                var uri = new Uri(link.FixLink(baseUri));
-                if (ProcessedLinks.ContainsKey(uri))
+                var restored = link.RestoreAbsolutePath(baseUri);
+                if (!Uri.IsWellFormedUriString(restored, UriKind.Absolute))
+                    continue;
+                var uri = new Uri(restored);
+                if (ProcessedLinks.ContainsKey(uri.AbsoluteUri))
                     continue;
                 if (!link.EndsWith(".xml"))
                 {
-                    ProcessedLinks.TryAdd(uri, new CrawlItem(uri.AbsoluteUri, -1));
+                    ProcessedLinks.TryAdd(uri.AbsoluteUri, new CrawlItem(uri.AbsoluteUri, -1));
                     continue;
                 }
 

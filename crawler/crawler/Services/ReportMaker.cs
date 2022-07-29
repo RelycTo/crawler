@@ -55,13 +55,14 @@ public class ReportMaker
         Func<ResultItem, bool> predicate) =>
         items
             .Where(predicate)
-            .Select((i, index) => new { i.Url, Index = index })
+            .Select((i, index) => new { i.Url, Index = index + 1 })
             .ToDictionary(k => k.Index.ToString(), v => v.Url);
 
     private static Dictionary<string, string> GetStatisticData(IEnumerable<ResultItem> items) =>
         items
             .Where(i => i.Duration > 0)
-            .Select((i, index) => new { Url = i.Url, Duration = i.Duration, Index = index })
+            .OrderBy(i => i.Duration)
+            .Select((i, index) => new { Url = i.Url, Duration = i.Duration, Index = index + 1 })
             .ToDictionary(k => $"{k.Index}\t{k.Url}", v => v.Duration.ToString());
 
     private static ReportItem GetReportSection(Dictionary<string, string> rows, string title, string rowHeader) =>

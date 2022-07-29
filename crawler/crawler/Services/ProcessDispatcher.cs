@@ -27,7 +27,6 @@ public class ProcessDispatcher
         new ReportMaker(data).Print();
     }
 
-
     private async Task<IEnumerable<CrawlItem>> ProcessAsync(ILinkParser parser, string url,
         IEnumerable<string> mediaTypes, CancellationToken token = default)
     {

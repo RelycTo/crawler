@@ -6,14 +6,15 @@ namespace crawler.Services;
 
 public class PageLoader
 {
-    private string[] _excludedMimeTypes;
     private readonly HttpClient _client;
 
     public PageLoader(HttpClient client)
     {
-        _excludedMimeTypes = Array.Empty<string>();
+        ExcludedMimeTypes = Array.Empty<string>();
         _client = client;
     }
+
+    public string[] ExcludedMimeTypes { get; private set; }
 
     public async Task<CrawlResponse> GetResponseAsync(Uri uri, CancellationToken token)
     {
@@ -22,20 +23,20 @@ public class PageLoader
         var response = await _client.GetAsync(uri, token);
         watcher.Stop();
 
-        var content = await GetContentAsync(response, token);
+        var content = await GetContentAsync(response, ExcludedMimeTypes, token);
         return new CrawlResponse(uri, content, response.StatusCode, watcher.ElapsedMilliseconds);
     }
 
     public PageLoader SetExcludedMediaTypes(IEnumerable<string> excludedMimeTypes)
     {
-        _excludedMimeTypes = excludedMimeTypes.ToArray();
+        ExcludedMimeTypes = excludedMimeTypes.ToArray();
         return this;
     }
 
-    private async Task<string> GetContentAsync(HttpResponseMessage response, CancellationToken token)
+    private static async Task<string> GetContentAsync(HttpResponseMessage response, IEnumerable<string> excludedMimeTypes, CancellationToken token)
     {
         if (response.Content.Headers.ContentType?.MediaType == null ||
-            _excludedMimeTypes.Any(t => t == response.Content.Headers.ContentType?.MediaType))
+            excludedMimeTypes.Any(t => t == response.Content.Headers.ContentType?.MediaType))
             return string.Empty;
         using var sr = new StreamReader(await response.Content.ReadAsStreamAsync(token),
             Encoding.GetEncoding("iso-8859-1"));
