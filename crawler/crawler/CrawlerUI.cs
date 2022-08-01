@@ -1,4 +1,5 @@
-﻿using crawler.Services;
+﻿using crawler.Infrastructure;
+using crawler.Services;
 
 namespace crawler;
 
@@ -14,10 +15,14 @@ public class CrawlerUI
                 var input = Console.ReadLine();
                 if (string.IsNullOrWhiteSpace(input))
                     break;
-                
+
                 if (!Uri.IsWellFormedUriString(input, UriKind.Absolute))
                     throw new ArgumentException("Input URL is not in the correct format.");
-                var dispatcher = new ProcessDispatcher(new PageLoader(new HttpClient()));
+                
+                var processorFactory = ProcessorFactory.Create(new PageLoader(new HttpClient()));
+                var report = new ConsoleReport(new ReportFormatter());
+                var dispatcher = new ProcessDispatcher(processorFactory, 10, report);
+                
                 await dispatcher.Run(input, token);
             }
             catch (Exception e)

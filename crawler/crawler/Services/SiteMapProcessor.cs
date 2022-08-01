@@ -1,11 +1,14 @@
 ﻿using crawler.Extensions;
+using crawler.Infrastructure;
 using crawler.Models;
 
 namespace crawler.Services;
 
-public class SiteMapProcessor: LinkProcessor
+public class SiteMapProcessor : LinkProcessor
 {
-    public SiteMapProcessor(PageLoader pageLoader, ILinkParser parser, IEnumerable<Uri> links, int maxThreads) : base(pageLoader, parser, links, maxThreads)
+    public SiteMapProcessor(PageLoader pageLoader, ILinkParser parser,
+        IEnumerable<string> excludedMediaTypes, int maxThreads)
+        : base(pageLoader, parser, excludedMediaTypes, maxThreads)
     {
     }
 
@@ -13,27 +16,19 @@ public class SiteMapProcessor: LinkProcessor
     {
         foreach (var link in links)
         {
-            try
+            var restored = link.RestoreAbsolutePath(baseUri);
+            if (!Uri.IsWellFormedUriString(restored, UriKind.Absolute))
+                continue;
+            var uri = new Uri(restored);
+            if (ProcessedLinks.ContainsKey(uri.AbsoluteUri))
+                continue;
+            if (!link.EndsWith(".xml"))
             {
-                var restored = link.RestoreAbsolutePath(baseUri);
-                if (!Uri.IsWellFormedUriString(restored, UriKind.Absolute))
-                    continue;
-                var uri = new Uri(restored);
-                if (ProcessedLinks.ContainsKey(uri.AbsoluteUri))
-                    continue;
-                if (!link.EndsWith(".xml"))
-                {
-                    ProcessedLinks.TryAdd(uri.AbsoluteUri, new CrawlItem(uri.AbsoluteUri, -1));
-                    continue;
-                }
+                ProcessedLinks.TryAdd(uri.AbsoluteUri, new CrawlItem(uri.AbsoluteUri, -1));
+                continue;
+            }
 
-                Queue.Enqueue(uri);
-            }
-            catch (UriFormatException e)
-            {
-                Console.WriteLine(e);
-            }
+            Queue.Enqueue(uri);
         }
     }
-
 }

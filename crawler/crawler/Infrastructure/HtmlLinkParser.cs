@@ -1,12 +1,12 @@
 ﻿using HtmlAgilityPack;
 
-namespace crawler.Services;
+namespace crawler.Infrastructure;
 
 public class HtmlLinkParser : ILinkParser
 {
     private const string Href = "href";
 
-    private IEnumerable<string> ExcludeLinks = new List<string>
+    private readonly IEnumerable<string> _excludeLinks = new List<string>
     {
         "mailto:",
         "skype:",
@@ -30,7 +30,7 @@ public class HtmlLinkParser : ILinkParser
                      .Where(n => n.Attributes.Contains(Href))
                      .Select(n => n.Attributes[Href]))
         {
-            if (ExcludeLinks.Any(l => node.Value.StartsWith(l)))
+            if (_excludeLinks.Any(l => node.Value.StartsWith(l)))
                 continue;
             yield return node.Value;
         }

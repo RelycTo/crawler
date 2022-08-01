@@ -2,7 +2,7 @@
 using System.Text;
 using crawler.Models;
 
-namespace crawler.Services;
+namespace crawler.Infrastructure;
 
 public class PageLoader
 {
@@ -10,27 +10,18 @@ public class PageLoader
 
     public PageLoader(HttpClient client)
     {
-        ExcludedMimeTypes = Array.Empty<string>();
         _client = client;
     }
 
-    public string[] ExcludedMimeTypes { get; private set; }
-
-    public async Task<CrawlResponse> GetResponseAsync(Uri uri, CancellationToken token)
+    public async Task<CrawlResponse> GetResponseAsync(Uri uri, IEnumerable<string> excludedMediaTypes, CancellationToken token)
     {
         var watcher = new Stopwatch();
         watcher.Start();
         var response = await _client.GetAsync(uri, token);
         watcher.Stop();
 
-        var content = await GetContentAsync(response, ExcludedMimeTypes, token);
+        var content = await GetContentAsync(response, excludedMediaTypes, token);
         return new CrawlResponse(uri, content, response.StatusCode, watcher.ElapsedMilliseconds);
-    }
-
-    public PageLoader SetExcludedMediaTypes(IEnumerable<string> excludedMimeTypes)
-    {
-        ExcludedMimeTypes = excludedMimeTypes.ToArray();
-        return this;
     }
 
     private static async Task<string> GetContentAsync(HttpResponseMessage response, IEnumerable<string> excludedMimeTypes, CancellationToken token)

@@ -1,6 +1,4 @@
-﻿using System.Text;
-
-namespace crawler.Extensions;
+﻿namespace crawler.Extensions;
 
 public static class UrlExtensions
 {

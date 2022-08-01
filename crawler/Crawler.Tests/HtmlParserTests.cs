@@ -1,4 +1,4 @@
-using crawler.Services;
+using crawler.Infrastructure;
 
 namespace Crawler.Tests;
 

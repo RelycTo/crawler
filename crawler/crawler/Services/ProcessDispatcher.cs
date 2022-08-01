@@ -1,39 +1,45 @@
-﻿using System.Net;
-using System.Net.Mime;
-using crawler.Extensions;
+﻿using crawler.Infrastructure;
 using crawler.Models;
 
 namespace crawler.Services;
 
 public class ProcessDispatcher
 {
-    private readonly PageLoader _loader;
+    private readonly int _maxThreads;
+    private readonly ConsoleReport _report;
+    private readonly ProcessorFactory _factory;
 
-    public ProcessDispatcher(PageLoader loader)
+    public ProcessDispatcher(ProcessorFactory factory, int maxThreads, ConsoleReport report)
     {
-        _loader = loader;
+        _report = report;
+        _factory = factory;
+        _maxThreads = maxThreads;
     }
 
     public async Task Run(string baseUrl, CancellationToken token = default)
     {
-        var crawledResult = await ProcessAsync(new HtmlLinkParser(), baseUrl, new[] { MediaTypeNames.Text.Xml }, token);
-        var siteMapResult = await ProcessAsync(new XmlLinkParser(), baseUrl.TrimEnd('/') + "/sitemap.xml", new[]
-            { MediaTypeNames.Text.Html, MediaTypeNames.Text.Plain, MediaTypeNames.Text.RichText }, token);
+        var crawl = await CrawlLinkAsync(baseUrl, token);
+        var siteMapCrawl = await CrawlSiteMapAsync(baseUrl, token);
+        var result = await PostProcessAsync(crawl, siteMapCrawl, token);
 
-        _loader.SetExcludedMediaTypes(new[] { MediaTypeNames.Text.Xml });
-        var afterProcessor = new AfterCrawlProcessor(_loader, crawledResult, siteMapResult);
-        var data = await afterProcessor.ProcessAsync(token);
-
-        new ReportMaker(data).Print();
+        _report.Build(result.ToList().AsReadOnly());
     }
 
-    private async Task<IEnumerable<CrawlItem>> ProcessAsync(ILinkParser parser, string url,
-        IEnumerable<string> mediaTypes, CancellationToken token = default)
+    private async Task<IEnumerable<CrawlItem>> CrawlLinkAsync(string url, CancellationToken token)
     {
-        var uri = new Uri(url);
-        var loader = _loader
-            .SetExcludedMediaTypes(mediaTypes);
-        var crawler = new Crawler(loader, parser, 10);
-        return await crawler.CrawlAsync(uri, token);
+        var processor = _factory.CreateLinkProcessor(new HtmlLinkParser(), _maxThreads);
+        return await processor.ProcessAsync(new Uri(url), token);
+    }
+    private async Task<IEnumerable<CrawlItem>> CrawlSiteMapAsync(string url, CancellationToken token)
+    {
+        url = url.TrimEnd('/') + "/sitemap.xml";
+        var processor = _factory.CreateSiteMapProcessor(new XmlLinkParser(), _maxThreads);
+        return await processor.ProcessAsync(new Uri(url), token);
+    }
+
+    private async Task<IEnumerable<ResultItem>> PostProcessAsync(IEnumerable<CrawlItem> links, IEnumerable<CrawlItem> siteMapLinks, CancellationToken token)
+    {
+        var processor = _factory.CreatePostProcessor(links, siteMapLinks);
+        return await processor.ProcessAsync(token);
     }
 }

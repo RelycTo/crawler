@@ -1,21 +1,25 @@
 ﻿using System.Net;
+using crawler.Infrastructure;
 using crawler.Models;
 
 namespace crawler.Services;
 
-public class AfterCrawlProcessor
+public class PostProcessor
 {
     private readonly PageLoader _loader;
     private readonly IEnumerable<CrawlItem> _siteMapItems;
     private readonly Dictionary<string, ResultItem> _processedItems;
+    private readonly IEnumerable<string> _excludedMediaTypes;
 
-    public AfterCrawlProcessor(PageLoader loader, IEnumerable<CrawlItem> crawledItems,IEnumerable<CrawlItem> siteMapItems)
+    public PostProcessor(PageLoader loader, IEnumerable<CrawlItem> crawledItems, IEnumerable<CrawlItem> siteMapItems,
+        IEnumerable<string> excludedMediaTypes)
     {
         _loader = loader;
         _siteMapItems = siteMapItems;
         _processedItems = crawledItems
-            .ToDictionary(k => k.Url, 
+            .ToDictionary(k => k.Url,
                 v => new ResultItem(v.Url, v.Duration, true, false));
+        _excludedMediaTypes = excludedMediaTypes;
     }
 
     public async Task<IEnumerable<ResultItem>> ProcessAsync(CancellationToken token)
@@ -29,7 +33,7 @@ public class AfterCrawlProcessor
                 continue;
             }
 
-            var response = await _loader.GetResponseAsync(item.Uri, token);
+            var response = await _loader.GetResponseAsync(item.Uri, _excludedMediaTypes, token);
             if (response.StatusCode == HttpStatusCode.OK)
                 _processedItems[item.Url] = new ResultItem(item.Url, response.Duration, false, true);
         }

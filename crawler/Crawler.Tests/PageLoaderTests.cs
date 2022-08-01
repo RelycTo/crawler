@@ -1,6 +1,6 @@
 ﻿using System.Net;
 using System.Net.Mime;
-using crawler.Services;
+using crawler.Infrastructure;
 using Moq;
 using Crawler.Tests.Mocks;
 using Moq.Protected;
@@ -20,7 +20,9 @@ public class PageLoaderTests
         var httpClient = new HttpClient(handlerMock.Object);
         var loader = new PageLoader(httpClient);
 
-        var actual = await loader.GetResponseAsync(new Uri("https://test.com"), CancellationToken.None);
+        var actual = await loader
+            .GetResponseAsync(new Uri("https://test.com"), new[] { MediaTypeNames.Text.Xml },
+                CancellationToken.None);
 
         handlerMock.Protected().Verify("SendAsync", Times.Once(), ItExpr.IsAny<HttpRequestMessage>(),
             ItExpr.IsAny<CancellationToken>());
@@ -39,10 +41,12 @@ public class PageLoaderTests
             "text/xml"
         );
         var httpClient = new HttpClient(handlerMock.Object);
-        var loader = new PageLoader(httpClient)
-            .SetExcludedMediaTypes(new[] { MediaTypeNames.Text.Xml });
+        var loader = new PageLoader(httpClient);
 
-        var actual = await loader.GetResponseAsync(new Uri("https://test.com/sitemap.xml"), CancellationToken.None);
+        var actual = await loader
+            .GetResponseAsync(new Uri("https://test.com/sitemap.xml"),
+                new[] { MediaTypeNames.Text.Xml },
+                CancellationToken.None);
 
         handlerMock.Protected().Verify("SendAsync", Times.Once(), ItExpr.IsAny<HttpRequestMessage>(),
             ItExpr.IsAny<CancellationToken>());

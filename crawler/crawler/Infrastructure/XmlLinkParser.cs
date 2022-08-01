@@ -1,8 +1,8 @@
 ﻿using System.Xml;
 
-namespace crawler.Services
+namespace crawler.Infrastructure
 {
-    public class XmlLinkParser: ILinkParser
+    public class XmlLinkParser : ILinkParser
     {
         public IEnumerable<string> GetLinks(string content)
         {
@@ -21,12 +21,12 @@ namespace crawler.Services
 
             var nodes = document.GetElementsByTagName("loc");
 
-                foreach (XmlNode node in nodes)
-                {
-                    if (string.IsNullOrWhiteSpace(node.FirstChild?.Value))
-                        yield break;
-                    yield return node.FirstChild.Value;
-                }
+            foreach (XmlNode node in nodes)
+            {
+                if (string.IsNullOrWhiteSpace(node.FirstChild?.Value))
+                    yield break;
+                yield return node.FirstChild.Value;
+            }
         }
     }
 }
