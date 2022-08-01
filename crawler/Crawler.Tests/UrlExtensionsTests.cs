@@ -1,4 +1,4 @@
-﻿using crawler.Extensions;
+﻿using Crawler.Extensions;
 
 namespace Crawler.Tests;
 

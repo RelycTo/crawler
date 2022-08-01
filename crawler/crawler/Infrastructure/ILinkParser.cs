@@ -1,4 +1,4 @@
-﻿namespace crawler.Infrastructure;
+﻿namespace Crawler.Infrastructure;
 
 public interface ILinkParser
 {

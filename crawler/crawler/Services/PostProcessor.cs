@@ -1,8 +1,8 @@
 ﻿using System.Net;
-using crawler.Infrastructure;
-using crawler.Models;
+using Crawler.Infrastructure;
+using Crawler.Models;
 
-namespace crawler.Services;
+namespace Crawler.Services;
 
 public class PostProcessor
 {
@@ -11,8 +11,8 @@ public class PostProcessor
     private readonly Dictionary<string, ResultItem> _processedItems;
     private readonly IEnumerable<string> _excludedMediaTypes;
 
-    public PostProcessor(PageLoader loader, IEnumerable<CrawlItem> crawledItems, IEnumerable<CrawlItem> siteMapItems,
-        IEnumerable<string> excludedMediaTypes)
+    public PostProcessor(PageLoader loader, IEnumerable<CrawlItem> crawledItems, 
+        IEnumerable<CrawlItem> siteMapItems, IEnumerable<string> excludedMediaTypes)
     {
         _loader = loader;
         _siteMapItems = siteMapItems;
@@ -22,7 +22,7 @@ public class PostProcessor
         _excludedMediaTypes = excludedMediaTypes;
     }
 
-    public async Task<IEnumerable<ResultItem>> ProcessAsync(CancellationToken token)
+    public virtual async Task<IEnumerable<ResultItem>> ProcessAsync(CancellationToken token = default)
     {
         foreach (var item in _siteMapItems)
         {

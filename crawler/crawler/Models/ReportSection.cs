@@ -1,4 +1,4 @@
-﻿namespace crawler.Models;
+﻿namespace Crawler.Models;
 
 public class ReportSection
 {

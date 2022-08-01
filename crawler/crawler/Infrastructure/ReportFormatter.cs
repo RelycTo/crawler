@@ -1,6 +1,6 @@
-﻿using crawler.Models;
+﻿using Crawler.Models;
 
-namespace crawler.Infrastructure;
+namespace Crawler.Infrastructure;
 
 public class ReportFormatter
 {
@@ -9,7 +9,7 @@ public class ReportFormatter
     private const string CrawlTotalRowKey = "Urls(html documents) found after crawling a website:";
     private const string SiteMapTotalRowKey = "Urls found in sitemap:";
 
-    public IEnumerable<ReportSection> Prepare(IReadOnlyCollection<ResultItem> items)
+    public virtual IEnumerable<ReportSection> Prepare(IReadOnlyCollection<ResultItem> items)
     {
         var result = new List<ReportSection>
         {

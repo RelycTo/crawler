@@ -1,6 +1,6 @@
 ﻿using System.Xml;
 
-namespace crawler.Infrastructure
+namespace Crawler.Infrastructure
 {
     public class XmlLinkParser : ILinkParser
     {

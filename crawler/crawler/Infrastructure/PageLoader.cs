@@ -1,8 +1,8 @@
 ﻿using System.Diagnostics;
 using System.Text;
-using crawler.Models;
+using Crawler.Models;
 
-namespace crawler.Infrastructure;
+namespace Crawler.Infrastructure;
 
 public class PageLoader
 {
@@ -13,7 +13,8 @@ public class PageLoader
         _client = client;
     }
 
-    public async Task<CrawlResponse> GetResponseAsync(Uri uri, IEnumerable<string> excludedMediaTypes, CancellationToken token)
+    public async Task<CrawlResponse> GetResponseAsync(Uri uri, IEnumerable<string> excludedMediaTypes,
+        CancellationToken token = default)
     {
         var watcher = new Stopwatch();
         watcher.Start();
@@ -24,7 +25,8 @@ public class PageLoader
         return new CrawlResponse(uri, content, response.StatusCode, watcher.ElapsedMilliseconds);
     }
 
-    private static async Task<string> GetContentAsync(HttpResponseMessage response, IEnumerable<string> excludedMimeTypes, CancellationToken token)
+    private static async Task<string> GetContentAsync(HttpResponseMessage response,
+        IEnumerable<string> excludedMimeTypes, CancellationToken token)
     {
         if (response.Content.Headers.ContentType?.MediaType == null ||
             excludedMimeTypes.Any(t => t == response.Content.Headers.ContentType?.MediaType))

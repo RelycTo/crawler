@@ -1,10 +1,10 @@
 ﻿using System.Collections.Concurrent;
 using System.Net;
-using crawler.Extensions;
-using crawler.Infrastructure;
-using crawler.Models;
+using Crawler.Extensions;
+using Crawler.Infrastructure;
+using Crawler.Models;
 
-namespace crawler.Services;
+namespace Crawler.Services;
 
 public class LinkProcessor
 {
@@ -15,8 +15,8 @@ public class LinkProcessor
     private readonly IEnumerable<string> _excludedMediaTypes;
     private readonly int _maxThreads;
 
-    public LinkProcessor(PageLoader pageLoader, ILinkParser parser, IEnumerable<string> excludedMediaTypes,
-        int maxThreads)
+    public LinkProcessor(PageLoader pageLoader, ILinkParser parser,
+        IEnumerable<string> excludedMediaTypes, int maxThreads)
     {
         _parser = parser;
         _pageLoader = pageLoader;
@@ -26,7 +26,7 @@ public class LinkProcessor
         ProcessedLinks = new ConcurrentDictionary<string, CrawlItem>();
     }
 
-    public async Task<IEnumerable<CrawlItem>> ProcessAsync(Uri uri, CancellationToken token = default)
+    public virtual async Task<IEnumerable<CrawlItem>> ProcessAsync(Uri uri, CancellationToken token = default)
     {
         var tasks = new List<Task>();
         Queue.Enqueue(uri);
@@ -35,7 +35,7 @@ public class LinkProcessor
             var isFirst = i == 0;
             tasks.Add(Task.Run(async () =>
             {
-                if (isFirst)
+                if (!isFirst)
                     await Task.Delay(3000, token);
                 while (Queue.TryDequeue(out var currentLink))
                 {
@@ -52,7 +52,7 @@ public class LinkProcessor
         return ProcessedLinks.Values.Where(v => !v.Url.EndsWith(".xml"));
     }
 
-    private async Task ProcessLinkAsync(Uri uri, CancellationToken token = default)
+    private async Task ProcessLinkAsync(Uri uri, CancellationToken token)
     {
         var response = await _pageLoader.GetResponseAsync(uri, _excludedMediaTypes, token);
 

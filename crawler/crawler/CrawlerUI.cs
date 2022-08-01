@@ -1,7 +1,7 @@
-﻿using crawler.Infrastructure;
-using crawler.Services;
+﻿using Crawler.Infrastructure;
+using Crawler.Services;
 
-namespace crawler;
+namespace Crawler;
 
 public class CrawlerUI
 {

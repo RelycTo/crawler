@@ -1,7 +1,7 @@
-﻿using crawler.Infrastructure;
-using crawler.Models;
+﻿using Crawler.Infrastructure;
+using Crawler.Models;
 
-namespace crawler.Services;
+namespace Crawler.Services;
 
 public class ProcessDispatcher
 {
@@ -30,6 +30,7 @@ public class ProcessDispatcher
         var processor = _factory.CreateLinkProcessor(new HtmlLinkParser(), _maxThreads);
         return await processor.ProcessAsync(new Uri(url), token);
     }
+
     private async Task<IEnumerable<CrawlItem>> CrawlSiteMapAsync(string url, CancellationToken token)
     {
         url = url.TrimEnd('/') + "/sitemap.xml";
@@ -37,7 +38,8 @@ public class ProcessDispatcher
         return await processor.ProcessAsync(new Uri(url), token);
     }
 
-    private async Task<IEnumerable<ResultItem>> PostProcessAsync(IEnumerable<CrawlItem> links, IEnumerable<CrawlItem> siteMapLinks, CancellationToken token)
+    private async Task<IEnumerable<ResultItem>> PostProcessAsync(IEnumerable<CrawlItem> links,
+        IEnumerable<CrawlItem> siteMapLinks, CancellationToken token)
     {
         var processor = _factory.CreatePostProcessor(links, siteMapLinks);
         return await processor.ProcessAsync(token);

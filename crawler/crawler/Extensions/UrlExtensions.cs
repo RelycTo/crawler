@@ -1,8 +1,9 @@
-﻿namespace crawler.Extensions;
+﻿namespace Crawler.Extensions;
 
 public static class UrlExtensions
 {
     private const string SiteMap = "sitemap.xml";
+
     public static bool IsLinkAcceptable(this Uri uri, Uri baseUri)
     {
         return uri.IsAcceptableSchema() &&
@@ -76,4 +77,3 @@ public static class UrlExtensions
     private static bool IsInternalLink(Uri checkUri, Uri baseUri) =>
         checkUri.Host == baseUri.Host;
 }
-

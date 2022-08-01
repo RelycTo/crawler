@@ -1,4 +1,4 @@
-﻿using crawler.Infrastructure;
+﻿using Crawler.Infrastructure;
 
 namespace Crawler.Tests
 {

@@ -1,8 +1,8 @@
-﻿using crawler.Extensions;
-using crawler.Infrastructure;
-using crawler.Models;
+﻿using Crawler.Extensions;
+using Crawler.Infrastructure;
+using Crawler.Models;
 
-namespace crawler.Services;
+namespace Crawler.Services;
 
 public class SiteMapProcessor : LinkProcessor
 {

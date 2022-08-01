@@ -1,6 +1,6 @@
 ﻿using System.Net;
 
-namespace crawler.Models;
+namespace Crawler.Models;
 
 public class CrawlResponse
 {

@@ -1,8 +1,8 @@
 ﻿using System.Net.Mime;
-using crawler.Models;
-using crawler.Services;
+using Crawler.Models;
+using Crawler.Services;
 
-namespace crawler.Infrastructure;
+namespace Crawler.Infrastructure;
 
 //Thread unsafe singleton. But it's ok at the moment
 public class ProcessorFactory
@@ -31,7 +31,7 @@ public class ProcessorFactory
             MediaTypeNames.Text.RichText
         }, maxThreads);
 
-    public PostProcessor
-        CreatePostProcessor(IEnumerable<CrawlItem> crawledItems, IEnumerable<CrawlItem> siteMapItems) =>
+    public PostProcessor CreatePostProcessor(IEnumerable<CrawlItem> crawledItems,
+        IEnumerable<CrawlItem> siteMapItems) =>
         new(_loader, crawledItems, siteMapItems, new[] { MediaTypeNames.Text.Xml });
 }

@@ -1,6 +1,6 @@
 ﻿using HtmlAgilityPack;
 
-namespace crawler.Infrastructure;
+namespace Crawler.Infrastructure;
 
 public class HtmlLinkParser : ILinkParser
 {
