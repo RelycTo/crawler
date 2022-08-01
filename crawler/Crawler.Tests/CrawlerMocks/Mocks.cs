@@ -1,8 +1,5 @@
 ﻿using System.Net;
 using System.Net.Http.Headers;
-using Crawler.Infrastructure;
-using Crawler.Models;
-using Crawler.Services;
 using Moq;
 using Moq.Protected;
 
