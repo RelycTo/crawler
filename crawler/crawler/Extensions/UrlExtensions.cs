@@ -54,16 +54,19 @@ public static class UrlExtensions
         var linkParts = link.Split('/', StringSplitOptions.RemoveEmptyEntries);
         var depth = linkParts.Count(linkPart => linkPart.Equals(".."));
         var parentUrlParts = parentUri.LocalPath.Split('/', StringSplitOptions.RemoveEmptyEntries);
+        var partLength = parentUrlParts.Length;
 
-        return string.Join("/", parentUrlParts
-            .Select((p, i) => new { Part = p, Index = i })
-            .Where(p => p.Index < parentUrlParts.Length - depth)
-            .Select(p => p.Part)
-            .Union(linkParts
-                .Select((p, i) => new { Part = p, Index = i })
-                .Where(p => p.Index >= depth)
-                .Select(p => p.Part)));
+        parentUrlParts = GetRelativePathParts(parentUrlParts, depth, x => x < partLength - depth).ToArray();
+        linkParts = GetRelativePathParts(linkParts, depth, x => x >= depth).ToArray();
+        
+        return string.Join("/", parentUrlParts.Union(linkParts));
     }
+
+    private static IEnumerable<string> GetRelativePathParts(IEnumerable<string> pathParts, int depth, Func<int, bool> predicate) =>
+        pathParts
+            .Select((p, i) => new { Part = p, Index = i })
+            .Where(p => predicate(p.Index))
+            .Select(p => p.Part);
 
     private static bool IsAcceptableSchema(this Uri uri) =>
         uri.Scheme is "http" or "https";
