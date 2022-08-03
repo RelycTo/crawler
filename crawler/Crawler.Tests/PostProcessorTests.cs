@@ -20,12 +20,11 @@ public class PostProcessorTests
         );
         var httpClient = new HttpClient(handlerMock.Object);
         var loader = new PageLoader(httpClient);
-        var processor = new PostProcessor(loader,
-            Stubs.CrawledSiteStubCollection,
-            Stubs.CrawledSiteMapStubCollection,
-            new[] { MediaTypeNames.Text.Xml });
+        var processor = new PostProcessor(loader);
+        processor.SetProcessedItems(Stubs.CrawledSiteStubCollection);
 
-        var actual = (await processor.ProcessAsync(CancellationToken.None)).ToArray();
+        var actual = (await processor.ProcessAsync(Stubs.CrawledSiteMapStubCollection,
+            new[] { MediaTypeNames.Text.Xml }, CancellationToken.None)).ToArray();
 
         Assert.NotNull(actual);
         handlerMock.Protected().Verify("SendAsync", Times.Once(), ItExpr.IsAny<HttpRequestMessage>(),

@@ -7,24 +7,22 @@ namespace Crawler.Services;
 public class PostProcessor
 {
     private readonly PageLoader _loader;
-    private readonly IEnumerable<CrawlItem> _siteMapItems;
-    private readonly Dictionary<string, ResultItem> _processedItems;
-    private readonly IEnumerable<string> _excludedMediaTypes;
+    private Dictionary<string, ResultItem> _processedItems;
 
-    public PostProcessor(PageLoader loader, IEnumerable<CrawlItem> crawledItems, 
-        IEnumerable<CrawlItem> siteMapItems, IEnumerable<string> excludedMediaTypes)
+    public PostProcessor(PageLoader loader)
     {
         _loader = loader;
-        _siteMapItems = siteMapItems;
-        _processedItems = crawledItems
-            .ToDictionary(k => k.Url,
-                v => new ResultItem(v.Url, v.Duration, true, false));
-        _excludedMediaTypes = excludedMediaTypes;
+        _processedItems = new Dictionary<string, ResultItem>();
     }
 
-    public virtual async Task<IEnumerable<ResultItem>> ProcessAsync(CancellationToken token = default)
+    public void SetProcessedItems(IReadOnlyCollection<CrawlItem> items)
     {
-        foreach (var item in _siteMapItems)
+        _processedItems = items.ToDictionary(k => k.Url, v => new ResultItem(v.Url, v.Duration, true, false));
+    }
+
+    public virtual async Task<IEnumerable<ResultItem>> ProcessAsync(IReadOnlyCollection<CrawlItem> siteMapItems, IReadOnlyCollection<string> excludedMediaTypes, CancellationToken token = default)
+    {
+        foreach (var item in siteMapItems)
         {
             if (_processedItems.TryGetValue(item.Url, out var processed))
             {
@@ -33,7 +31,7 @@ public class PostProcessor
                 continue;
             }
 
-            var response = await _loader.GetResponseAsync(item.Uri, _excludedMediaTypes, token);
+            var response = await _loader.GetResponseAsync(item.Uri, excludedMediaTypes, token);
             if (response.StatusCode == HttpStatusCode.OK)
                 _processedItems[item.Url] = new ResultItem(item.Url, response.Duration, false, true);
         }

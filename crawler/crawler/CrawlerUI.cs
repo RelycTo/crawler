@@ -1,10 +1,16 @@
-﻿using Crawler.Infrastructure;
-using Crawler.Services;
+﻿using Crawler.Services;
 
 namespace Crawler;
 
 public class CrawlerUI
 {
+    private const int MaxThreads = 10;
+    private readonly ProcessDispatcher _dispatcher;
+    public CrawlerUI(ProcessDispatcher dispatcher)
+    {
+        _dispatcher = dispatcher;
+    }
+
     public async Task RunAsync(CancellationToken token = default)
     {
         while (true)
@@ -19,11 +25,7 @@ public class CrawlerUI
                 if (!Uri.IsWellFormedUriString(input, UriKind.Absolute))
                     throw new ArgumentException("Input URL is not in the correct format.");
                 
-                var processorFactory = ProcessorFactory.Create(new PageLoader(new HttpClient()));
-                var report = new ConsoleReport(new ReportFormatter());
-                var dispatcher = new ProcessDispatcher(processorFactory, 10, report);
-                
-                await dispatcher.Run(input, token);
+                await _dispatcher.Run(input, MaxThreads, token);
             }
             catch (Exception e)
             {

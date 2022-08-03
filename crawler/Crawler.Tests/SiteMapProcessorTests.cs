@@ -22,10 +22,10 @@ public class SiteMapProcessorTests
         var loader = new PageLoader(httpClient);
         var parser = new XmlLinkParser();
         var excludedMediaTypes = new[] { MediaTypeNames.Text.Html };
-        var processor = new SiteMapProcessor(loader, parser, excludedMediaTypes, 1);
+        var processor = new SiteMapProcessor(loader, parser);
         var uri = new Uri("https://test.com/sitemap.xml");
 
-        var actual = (await processor.ProcessAsync(uri, CancellationToken.None)).ToArray();
+        var actual = (await processor.ProcessAsync(uri, excludedMediaTypes, 1, CancellationToken.None)).ToArray();
 
         Assert.NotNull(actual);
         handlerMock.Protected().Verify("SendAsync", Times.Once(), ItExpr.IsAny<HttpRequestMessage>(),

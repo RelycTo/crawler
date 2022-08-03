@@ -4,15 +4,11 @@ using Crawler.Models;
 
 namespace Crawler.Services;
 
-public class SiteMapProcessor : LinkProcessor
+public class SiteMapProcessor : BaseLinkProcessor<XmlLinkParser>
 {
-    public SiteMapProcessor(PageLoader pageLoader, ILinkParser parser,
-        IEnumerable<string> excludedMediaTypes, int maxThreads)
-        : base(pageLoader, parser, excludedMediaTypes, maxThreads)
-    {
-    }
+    public SiteMapProcessor(PageLoader pageLoader, XmlLinkParser parser) : base(pageLoader, parser) { }
 
-    protected override void PopulateLinks(IEnumerable<string> links, Uri baseUri)
+    protected sealed override void PopulateLinks(IEnumerable<string> links, Uri baseUri)
     {
         foreach (var link in links)
         {

@@ -22,10 +22,10 @@ public class LinkProcessorTests
         var loader = new PageLoader(httpClient);
         var parser = new HtmlLinkParser();
         var excludedMediaTypes = new[] { MediaTypeNames.Text.Xml };
-        var processor = new LinkProcessor(loader, parser, excludedMediaTypes, 1);
+        var processor = new LinkProcessor(loader, parser);
         var uri = new Uri("https://test.com");
 
-        var actual = (await processor.ProcessAsync(uri, CancellationToken.None)).ToArray();
+        var actual = (await processor.ProcessAsync(uri, excludedMediaTypes, 1, CancellationToken.None)).ToArray();
 
         Assert.NotNull(actual);
         handlerMock.Protected().Verify("SendAsync", Times.Exactly(2), ItExpr.IsAny<HttpRequestMessage>(),

@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics;
 using System.Text;
 using Crawler.Models;
+using Microsoft.Net.Http.Headers;
 
 namespace Crawler.Infrastructure;
 
@@ -11,6 +12,7 @@ public class PageLoader
     public PageLoader(HttpClient client)
     {
         _client = client;
+        _client.DefaultRequestHeaders.Add(HeaderNames.UserAgent, "Other");
     }
 
     public async Task<CrawlResponse> GetResponseAsync(Uri uri, IEnumerable<string> excludedMediaTypes,
