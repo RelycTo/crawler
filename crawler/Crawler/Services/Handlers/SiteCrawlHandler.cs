@@ -1,39 +1,47 @@
 ﻿using System.Net.Mime;
-using Crawler.Infrastructure;
-using Crawler.Interfaces.HandlerRequests;
+using Crawler.Interfaces;
 using Crawler.Interfaces.Services;
-using Crawler.Models;
+using Shared.Models;
 
 namespace Crawler.Services.Handlers;
 
-public class SiteCrawlHandler : AbstractCrawlHandler<ICrawlRequest>
+public class SiteCrawlHandler<TParser> : AbstractCrawlHandler<CrawlHandlerContext> where TParser: ILinkParser
 {
-    private readonly ILinkProcessor<HtmlLinkParser> _processor;
+    private readonly ILinkProcessor<TParser> _processor;
 
-    public SiteCrawlHandler(ILinkProcessor<HtmlLinkParser> processor)
+    public SiteCrawlHandler(ILinkProcessor<TParser> processor)
     {
         _processor = processor;
     }
 
-    public override async Task Handle(ICrawlRequest request, CancellationToken token = default)
+    public override async Task Handle(CrawlHandlerContext context, CancellationToken token = default)
     {
-        var crawled = await _processor.ProcessAsync(request, token);
-        var nextRequest = GetNextRequest(request, crawled);
-        await base.Handle(nextRequest, token);
+        var crawled = await _processor.ProcessAsync(context, token);
+        UpdateContext(context, crawled);
+        await base.Handle(context, token);
     }
 
-    private static ICrawlProcessRequest GetNextRequest(ICrawlRequest request, IEnumerable<CrawlItem> items)
+    private static void UpdateContext(CrawlHandlerContext context, IEnumerable<CrawlItem> items)
     {
-        if (request is ICrawlProcessRequest crawlRequest)
+        var currentStep = context.Step;
+        var nextStep = currentStep + 1;
+        context
+            .SetStep(nextStep)
+            .SetProcessedItems(currentStep, items)
+            .Options
+            .SetExcludedMediaTypes(GetExcludedMediaTypes(currentStep));
+    }
+
+    private static IEnumerable<string> GetExcludedMediaTypes(ProcessStep step)
+    {
+        if (step != ProcessStep.SiteMap)
         {
-            crawlRequest
-                .SetStep(ProcessStep.SiteMap)
-                .SetExcludedMediaTypes(new[]
-                    { MediaTypeNames.Text.Html, MediaTypeNames.Text.Plain, MediaTypeNames.Text.RichText })
-                .SetProcessedItems(new Dictionary<ProcessStep, IEnumerable<CrawlItem>> { { ProcessStep.Site, items } });
-            return crawlRequest;
+            return new[] { MediaTypeNames.Text.Xml };
         }
 
-        throw new InvalidOperationException($"Unsupported type of request: {request.GetType()}");
+        return new[]
+        {
+            MediaTypeNames.Text.Html, MediaTypeNames.Text.Plain, MediaTypeNames.Text.RichText
+        };
     }
 }

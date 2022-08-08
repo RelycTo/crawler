@@ -1,4 +1,5 @@
-﻿using Crawler.Models;
+﻿using System.Net;
+using Shared.Models;
 
 namespace Crawler.Tests.CrawlerMocks;
 
@@ -31,25 +32,38 @@ internal static class Stubs
     </url>
     </urlset>";
 
-    public static IReadOnlyCollection<CrawlItem> CrawledSiteStubCollection = Array.Empty<CrawlItem>(); /*new[]
+    public static IReadOnlyCollection<CrawlItem> CrawledSiteStubCollection = new[]
     {
-        new CrawlItem("https://test.com", 20),
-        new CrawlItem("https://test.com/api/", 25),
-        new CrawlItem("https://test.com/api/directory", 40)
-    };*/
-
-    public static IReadOnlyCollection<CrawlItem> CrawledSiteMapStubCollection = Array.Empty<CrawlItem>(); /*new[]
-    {
-        new CrawlItem("https://test.com", -1),
-        new CrawlItem("https://test.com/api/", -1),
-        new CrawlItem("https://test.com/api/explain", -1)
-    };*/
-
-    public static IReadOnlyCollection<ResultItem> ResultItems = new[]
-    {
-        new ResultItem("https://test.com", 20, true, true),
-        new ResultItem("https://test.com/api", 50, true, true),
-        new ResultItem("https://test.com/api/directory", 40, true, false),
-        new ResultItem("https://test.com/api/explain", 30, false, true),
+        new CrawlItem(SourceType.Site, "https://test.com", 20, HttpStatusCode.OK),
+        new CrawlItem(SourceType.Site, "https://test.com/api/", 25, HttpStatusCode.OK),
+        new CrawlItem(SourceType.Site, "https://test.com/api/directory", 40, HttpStatusCode.OK)
     };
+
+    public static IReadOnlyCollection<CrawlItem> CrawledSiteMapStubCollection = new[]
+    {
+        new CrawlItem(SourceType.SiteMap, "https://test.com", -1, HttpStatusCode.OK),
+        new CrawlItem(SourceType.SiteMap, "https://test.com/api/", -1, HttpStatusCode.OK),
+        new CrawlItem(SourceType.SiteMap, "https://test.com/api/explain", -1, HttpStatusCode.OK)
+    };
+
+    public static IReadOnlyCollection<CrawlItem> ReportItems = new[]
+    {
+        new CrawlItem(SourceType.Both, "https://test.com", 20, HttpStatusCode.OK),
+        new CrawlItem(SourceType.Both, "https://test.com/api", 50, HttpStatusCode.OK),
+        new CrawlItem(SourceType.Site, "https://test.com/api/directory", 40, HttpStatusCode.OK),
+        new CrawlItem(SourceType.SiteMap, "https://test.com/api/explain", 30, HttpStatusCode.OK)
+    };
+
+    public static CrawlHandlerContext GetCrawlContext(ProcessStep step, IEnumerable<string> excludedMediaTypes)
+    {
+        var uri = step == ProcessStep.SiteMap ? new Uri("https://text.com/sitemap.xml") : new Uri("https://text.com/");
+        var context = CrawlHandlerContext.Create(uri, 1);
+        context
+            .SetStep(step)
+            .Options
+            .SetExcludedMediaTypes(excludedMediaTypes);
+
+        return context;
+    }
+
 }

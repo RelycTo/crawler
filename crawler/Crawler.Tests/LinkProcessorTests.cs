@@ -1,18 +1,18 @@
 ﻿using System.Net;
 using System.Net.Mime;
 using Crawler.Infrastructure;
-using Crawler.Models;
 using Crawler.Services;
 using Crawler.Tests.CrawlerMocks;
 using Moq;
 using Moq.Protected;
+using Shared.Models;
 
 namespace Crawler.Tests;
 
 public class LinkProcessorTests
 {
     [Fact]
-    public async Task ProcessAsync_SiteCrawl_ShouldReturnCrawlItemCollection()
+    public async Task LinkProcessorCrawledHtmlWithInternalLinksShouldReturnCrawlItemCollection()
     {
         var handlerMock = CrawlerMocks.Mocks.CreateHttpSequencedMessageHandlerMock(
             new[] { Stubs.HtmlResponseStubWithAnchors, Stubs.HtmlResponseStubWithoutAnchors },
@@ -22,11 +22,11 @@ public class LinkProcessorTests
         var httpClient = new HttpClient(handlerMock.Object);
         var loader = new PageLoader(httpClient);
         var parser = new HtmlLinkParser();
-        var excludedMediaTypes = new[] { MediaTypeNames.Text.Xml };
-        var processor = new LinkProcessor(loader, parser);
-        var uri = new Uri("https://test.com");
+        var linkRestorer = new LinkRestorer();
+        var processor = new LinkProcessor(loader, parser, linkRestorer);
+        var context = Stubs.GetCrawlContext(ProcessStep.Site, new[] { MediaTypeNames.Text.Xml });
 
-        var actual = Array.Empty<CrawlItem>(); //(await processor.ProcessAsync(uri, excludedMediaTypes, 1, CancellationToken.None)).ToArray();
+        var actual = (await processor.ProcessAsync(context, CancellationToken.None)).ToArray();
 
         Assert.NotNull(actual);
         handlerMock.Protected().Verify("SendAsync", Times.Exactly(2), ItExpr.IsAny<HttpRequestMessage>(),

@@ -1,4 +1,5 @@
-﻿using HtmlAgilityPack;
+﻿using Crawler.Interfaces;
+using HtmlAgilityPack;
 
 namespace Crawler.Infrastructure;
 
@@ -17,21 +18,28 @@ public class HtmlLinkParser : ILinkParser
     public IEnumerable<string> GetLinks(string content)
     {
         if (string.IsNullOrWhiteSpace(content))
+        {
             yield break;
+        }
 
         var document = new HtmlDocument();
         document.LoadHtml(content);
         var nodes = document.DocumentNode.SelectNodes($"//a[@{Href}]");
 
         if (nodes == null)
+        {
             yield break;
+        }
 
         foreach (var node in nodes
                      .Where(n => n.Attributes.Contains(Href))
                      .Select(n => n.Attributes[Href]))
         {
-            if (_excludeLinks.Any(l => node.Value.StartsWith(l)))
+            if (_excludeLinks.Any(excluded => node.Value.StartsWith(excluded)))
+            {
                 continue;
+            }
+
             yield return node.Value;
         }
     }

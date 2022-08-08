@@ -1,4 +1,5 @@
 ﻿using System.Xml;
+using Crawler.Interfaces;
 
 namespace Crawler.Infrastructure
 {
@@ -7,7 +8,10 @@ namespace Crawler.Infrastructure
         public IEnumerable<string> GetLinks(string content)
         {
             if (string.IsNullOrWhiteSpace(content))
+            {
                 yield break;
+            }
+
             var document = new XmlDocument();
             try
             {

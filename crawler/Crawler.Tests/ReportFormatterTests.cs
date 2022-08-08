@@ -1,5 +1,5 @@
-﻿using Crawler.Infrastructure;
-using Crawler.Tests.CrawlerMocks;
+﻿using Crawler.Tests.CrawlerMocks;
+using Crawler.UI.Report;
 
 namespace Crawler.Tests;
 
@@ -9,7 +9,7 @@ public class ReportFormatterTests
     public void Prepare_ResultItemsCollection_ShouldReturnReportSectionsCollection()
     {
         var formatter = new ReportFormatter();
-        var actual = formatter.Prepare(Stubs.ResultItems).ToArray();
+        var actual = formatter.Prepare(Stubs.ReportItems).ToArray();
 
         Assert.NotNull(actual);
         Assert.Equal(4, actual.Length);

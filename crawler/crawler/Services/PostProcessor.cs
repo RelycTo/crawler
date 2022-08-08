@@ -1,7 +1,5 @@
 ﻿using Crawler.Infrastructure;
-using Crawler.Interfaces.HandlerRequests;
 using Crawler.Interfaces.Services;
-using Crawler.Models;
 using Shared.Models;
 
 namespace Crawler.Services;
@@ -17,16 +15,10 @@ public class PostProcessor: ILinkProcessor
         _processedItems = new Dictionary<string, CrawlItem>();
     }
 
-    public async Task<IEnumerable<CrawlItem>> ProcessAsync(ICrawlRequest request, CancellationToken token = default)
+    public async Task<IEnumerable<CrawlItem>> ProcessAsync(CrawlHandlerContext context, CancellationToken token = default)
     {
-        if (request is ICrawlProcessRequest processRequest)
-        {
-            _processedItems = processRequest.ProcessedItems[ProcessStep.Site].ToDictionary(k => k.Url, v => v);
-            return await ProcessAsync(processRequest.ProcessedItems[ProcessStep.SiteMap],
-                processRequest.ExcludedMediaTypes, token);
-        }
-
-        throw new InvalidOperationException($"Unsupported type of request: {request.GetType()}");
+            _processedItems = context.ProcessedItems[ProcessStep.Site].ToDictionary(k => k.Url, v => v);
+            return await ProcessAsync(context.ProcessedItems[ProcessStep.SiteMap], context.Options.ExcludedMediaTypes, token);
     }
 
     private async Task<IEnumerable<CrawlItem>> ProcessAsync(IEnumerable<CrawlItem> items, IReadOnlyCollection<string> excludedMediaTypes, CancellationToken token = default)
@@ -36,8 +28,11 @@ public class PostProcessor: ILinkProcessor
             if (_processedItems.TryGetValue(item.Url, out var processed))
             {
                 if (processed.SourceType == SourceType.Site)
-                    _processedItems[item.Url] = new CrawlItem(SourceType.Both, processed.Url, processed.Duration,
-                        processed.StatusCode);
+                {
+                    _processedItems[item.Url] = 
+                        new CrawlItem(SourceType.Both, processed.Url, processed.Duration, processed.StatusCode);
+                }
+
                 continue;
             }
 

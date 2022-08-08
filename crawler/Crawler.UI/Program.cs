@@ -1,43 +1,57 @@
 ﻿// See https://aka.ms/new-console-template for more information
 
-using Crawler;
 using Crawler.Infrastructure;
-using Crawler.Interfaces.HandlerRequests;
 using Crawler.Interfaces.Services;
 using Crawler.Services;
 using Crawler.Services.Handlers;
+using Crawler.UI;
+using Crawler.UI.Report;
 using DataAccess;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Shared.Models;
 
 var host = Host.CreateDefaultBuilder(args)
-    .ConfigureAppConfiguration((_, builder) => builder.SetBasePath(Directory.GetCurrentDirectory()))
+    .ConfigureAppConfiguration((context, builder) =>
+    {
+        builder.SetBasePath(Directory.GetCurrentDirectory());
+        /*
+        context.Configuration = new ConfigurationBuilder()
+            .AddJsonFile("appsettings.json")
+            .Build();
+    */
+    })
     .ConfigureServices((context, services) =>
     {
         services.AddHttpClient<PageLoader>();
+        services.AddSingleton<CrawlerApp>();
         services.AddSingleton<CrawlerUI>();
-        services.AddSingleton<ProcessDispatcher>();
         services.AddSingleton<ReportFormatter>();
+        services.AddSingleton<LinkRestorer>();
         services.AddScoped<ConsoleReport>();
         services.AddSingleton<HtmlLinkParser>();
         services.AddSingleton<XmlLinkParser>();
         services.AddScoped<ILinkProcessor<HtmlLinkParser>, LinkProcessor>();
         services.AddScoped<ILinkProcessor<XmlLinkParser>, SiteMapProcessor>();
-        services.AddScoped<PostProcessor>();
+        services.AddScoped<ILinkProcessor, PostProcessor>();
         services.AddScoped<PreProcessHandler>();
-        services.AddScoped<SiteCrawlHandler>();
-        services.AddScoped<SiteMapCrawlHandler>();
-        services.AddScoped<PostProcessCrawlHandler>();
+        services.AddScoped<SiteCrawlHandler<HtmlLinkParser>>();
+        services.AddScoped<SiteCrawlHandler<XmlLinkParser>>();
+        services.AddScoped<PostProcessHandler>();
+        services.AddScoped<PersistHandler>();
 
         services.ConfigureCrawlStorage(context.Configuration, "CrawlDB");
-        services.AddTransient<ICrawlHandler<ICrawlRequest>>(x =>
+        services.AddTransient<ICrawlHandler<CrawlHandlerContext>>(x =>
         {
             var handler = x.GetRequiredService<PreProcessHandler>();
-            handler.SetNext(x.GetRequiredService<SiteCrawlHandler>()
-                .SetNext(x.GetRequiredService<SiteMapCrawlHandler>()
-                    .SetNext(x.GetRequiredService<PostProcessCrawlHandler>()
-                        .SetNext(x.GetRequiredService<CrawlPersistHandler>()))));
+
+            var siteCrawl = x.GetRequiredService<ILinkProcessor<HtmlLinkParser>>();
+
+            handler.SetNext(x.GetRequiredService<SiteCrawlHandler<HtmlLinkParser>>()
+                .SetNext(x.GetRequiredService<SiteCrawlHandler<XmlLinkParser>>()
+                    .SetNext(x.GetRequiredService<PostProcessHandler>()
+                        .SetNext(x.GetRequiredService<PersistHandler>()))));
 
             return handler;
         });

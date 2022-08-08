@@ -1,7 +1,6 @@
 ﻿using System.Net;
-using Shared.Models;
 
-namespace Crawler.Models
+namespace Shared.Models
 {
     public class CrawlItem
     {

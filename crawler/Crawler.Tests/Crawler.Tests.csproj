@@ -26,6 +26,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Crawler.UI\Crawler.UI.csproj" />
     <ProjectReference Include="..\crawler\Crawler.csproj" />
   </ItemGroup>
 

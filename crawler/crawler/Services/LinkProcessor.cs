@@ -1,23 +1,31 @@
-﻿using Crawler.Extensions;
-using Crawler.Infrastructure;
+﻿using Crawler.Infrastructure;
 
 namespace Crawler.Services;
 
-public class LinkProcessor: BaseLinkProcessor<HtmlLinkParser>
+public class LinkProcessor : BaseLinkProcessor<HtmlLinkParser>
 {
-    public LinkProcessor(PageLoader pageLoader, HtmlLinkParser parser) : base(pageLoader, parser) { }
+    public LinkProcessor(PageLoader pageLoader, HtmlLinkParser parser, LinkRestorer linkRestorer)
+        : base(pageLoader, parser, linkRestorer)
+    {
+    }
 
     protected sealed override void PopulateLinks(IEnumerable<string> links, Uri baseUri)
     {
         foreach (var link in links)
         {
-            var restored = link.RestoreAbsolutePath(baseUri);
+            var restored = LinkRestorer.RestoreAbsolutePath(link, baseUri);
             if (!Uri.IsWellFormedUriString(restored, UriKind.Absolute))
+            {
                 continue;
+            }
+
             var uri = new Uri(restored);
-            if (ProcessedLinks.ContainsKey(uri.AbsoluteUri.TrimEnd('/'))
-                || link.EndsWith(".xml") || !uri.IsLinkAcceptable(baseUri))
+            if (ProcessedLinks.ContainsKey(uri.AbsoluteUri.TrimEnd('/')) ||
+                link.EndsWith(".xml") || !LinkRestorer.IsLinkAcceptable(uri, baseUri))
+            {
                 continue;
+            }
+
             Queue.Enqueue(uri);
         }
     }

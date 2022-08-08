@@ -1,4 +1,5 @@
 ﻿using DataAccess.Models;
+using DataAccess.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -12,6 +13,8 @@ public static class ServiceCollectionExtensions
     {
         var connection = configuration.ConnectionStringValidate(connectionName);
         services.AddDbContext<CrawlerDbContext>(options => options.UseSqlServer(connection));
+        services.AddTransient<ICrawlInfoRepository, CrawlInfoRepository>();
+        services.AddTransient<ICrawlDetailsRepository, CrawlDetailsRepository>();
     }
 
     private static string ConnectionStringValidate(this IConfiguration configuration, string connectionName)

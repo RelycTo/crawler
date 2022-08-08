@@ -1,12 +1,9 @@
-﻿using Crawler.Interfaces.HandlerRequests;
-using Crawler.Models;
-using Crawler.Models.CrawlRequests;
-using DataAccess.Repositories;
+﻿using DataAccess.Repositories;
 using Shared.Models;
 
 namespace Crawler.Services.Handlers;
 
-public class PreProcessHandler : AbstractCrawlHandler<ICrawlRequest>
+public class PreProcessHandler : AbstractCrawlHandler<CrawlHandlerContext>
 {
     private readonly ICrawlInfoRepository _repository;
 
@@ -15,13 +12,16 @@ public class PreProcessHandler : AbstractCrawlHandler<ICrawlRequest>
         _repository = repository;
     }
 
-    public override async Task Handle(ICrawlRequest request, CancellationToken token = default)
+    public override async Task Handle(CrawlHandlerContext context, CancellationToken token = default)
     {
-        var crawlId = await _repository.InsertAsync(request.CrawlInfo, token);
-        var nextRequest = GetNextRequest(request.CrawlInfo, crawlId, request.TaskCount);
-        await base.Handle(nextRequest, token);
+        var crawlId = await _repository.InsertAsync(context.CrawlInfo, token);
+        UpdateContext(context, crawlId);
+        await base.Handle(context, token);
     }
 
-    private static ICrawlProcessRequest GetNextRequest(CrawlInfoDto dto, int crawlId, int taskCount) =>
-        new CrawlProcessRequest(crawlId, ProcessStep.Site, new Uri(dto.Url), taskCount, dto);
+    private static void UpdateContext(CrawlHandlerContext context, int crawlId)
+    {
+        context.SetStep(context.Step + 1);
+        context.CrawlInfo.Id = crawlId;
+    }
 }

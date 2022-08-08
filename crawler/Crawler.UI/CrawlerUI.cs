@@ -1,14 +1,15 @@
 ﻿using Crawler.Services;
 
-namespace Crawler;
+namespace Crawler.UI;
 
 public class CrawlerUI
 {
     private const int MaxThreads = 10;
-    private readonly ProcessDispatcher _dispatcher;
-    public CrawlerUI(ProcessDispatcher dispatcher)
+    private readonly CrawlerApp _crawler;
+
+    public CrawlerUI(CrawlerApp crawler)
     {
-        _dispatcher = dispatcher;
+        _crawler = crawler;
     }
 
     public async Task RunAsync(CancellationToken token = default)
@@ -24,8 +25,8 @@ public class CrawlerUI
 
                 if (!Uri.IsWellFormedUriString(input, UriKind.Absolute))
                     throw new ArgumentException("Input URL is not in the correct format.");
-                
-                await _dispatcher.Run(input, MaxThreads, token);
+
+                await _crawler.Run(input, MaxThreads, token);
             }
             catch (Exception e)
             {
