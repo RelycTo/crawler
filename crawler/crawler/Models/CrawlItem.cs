@@ -1,25 +1,23 @@
-﻿namespace Crawler.Models
+﻿using System.Net;
+using Shared.Models;
+
+namespace Crawler.Models
 {
     public class CrawlItem
     {
-        public CrawlItem(string url, long duration)
+        public CrawlItem(SourceType sourceType, string url, long duration, HttpStatusCode statusCode)
         {
             Url = url;
+            SourceType = sourceType;
             Uri = new Uri(url);
             Duration = duration;
-            Errors = Array.Empty<string>();
+            StatusCode = statusCode;
         }
 
-        public CrawlItem(string url, params string[] errors)
-        {
-            Url = url;
-            Uri = new Uri(url);
-            Errors = errors;
-        }
-
+        public SourceType SourceType { get; }
         public string Url { get; }
         public Uri Uri { get; }
         public long Duration { get; }
-        public string[] Errors { get; }
+        public HttpStatusCode StatusCode { get; }
     }
 }

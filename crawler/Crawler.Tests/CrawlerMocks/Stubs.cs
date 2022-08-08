@@ -31,19 +31,19 @@ internal static class Stubs
     </url>
     </urlset>";
 
-    public static IReadOnlyCollection<CrawlItem> CrawledSiteStubCollection = new[]
+    public static IReadOnlyCollection<CrawlItem> CrawledSiteStubCollection = Array.Empty<CrawlItem>(); /*new[]
     {
         new CrawlItem("https://test.com", 20),
         new CrawlItem("https://test.com/api/", 25),
         new CrawlItem("https://test.com/api/directory", 40)
-    };
+    };*/
 
-    public static IReadOnlyCollection<CrawlItem> CrawledSiteMapStubCollection = new[]
+    public static IReadOnlyCollection<CrawlItem> CrawledSiteMapStubCollection = Array.Empty<CrawlItem>(); /*new[]
     {
         new CrawlItem("https://test.com", -1),
         new CrawlItem("https://test.com/api/", -1),
         new CrawlItem("https://test.com/api/explain", -1)
-    };
+    };*/
 
     public static IReadOnlyCollection<ResultItem> ResultItems = new[]
     {

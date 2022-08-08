@@ -2,13 +2,16 @@
 
 using Crawler;
 using Crawler.Infrastructure;
+using Crawler.Interfaces.HandlerRequests;
+using Crawler.Interfaces.Services;
 using Crawler.Services;
+using Crawler.Services.Handlers;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
 
-static void ConfigureService(IServiceCollection services)
+static void ConfigureService( /*IConfiguration configuration, */ IServiceCollection services)
 {
     services.AddHttpClient<PageLoader>();
     services.AddSingleton<CrawlerUI>();
@@ -20,6 +23,22 @@ static void ConfigureService(IServiceCollection services)
     services.AddScoped<ILinkProcessor<HtmlLinkParser>, LinkProcessor>();
     services.AddScoped<ILinkProcessor<XmlLinkParser>, SiteMapProcessor>();
     services.AddScoped<PostProcessor>();
+    services.AddScoped<PreProcessHandler>();
+    services.AddScoped<SiteCrawlHandler>();
+    services.AddScoped<SiteMapCrawlHandler>();
+    services.AddScoped<PostProcessCrawlHandler>();
+
+    //services.ConfigureCrawlStorage(configuration, "CrawlDB");
+    services.AddTransient<ICrawlHandler<ICrawlRequest>>(x =>
+    {
+        var handler = x.GetRequiredService<PreProcessHandler>();
+        handler.SetNext(x.GetRequiredService<SiteCrawlHandler>()
+            .SetNext(x.GetRequiredService<SiteMapCrawlHandler>()
+                .SetNext(x.GetRequiredService<PostProcessCrawlHandler>()
+                    .SetNext(x.GetRequiredService<CrawlPersistHandler>()))));
+
+        return handler;
+    });
 }
 
 var host = Host.CreateDefaultBuilder(args)

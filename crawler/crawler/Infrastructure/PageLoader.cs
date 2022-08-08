@@ -33,8 +33,7 @@ public class PageLoader
         if (response.Content.Headers.ContentType?.MediaType == null ||
             excludedMimeTypes.Any(t => t == response.Content.Headers.ContentType?.MediaType))
             return string.Empty;
-        using var sr = new StreamReader(await response.Content.ReadAsStreamAsync(token),
-            Encoding.GetEncoding("iso-8859-1"));
+        using var sr = new StreamReader(await response.Content.ReadAsStreamAsync(token), Encoding.UTF8);
         return await sr.ReadToEndAsync();
     }
 }

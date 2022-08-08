@@ -1,6 +1,8 @@
-﻿using Crawler.Extensions;
+﻿using System.Net;
+using Crawler.Extensions;
 using Crawler.Infrastructure;
 using Crawler.Models;
+using Shared.Models;
 
 namespace Crawler.Services;
 
@@ -20,7 +22,7 @@ public class SiteMapProcessor : BaseLinkProcessor<XmlLinkParser>
                 continue;
             if (!link.EndsWith(".xml"))
             {
-                ProcessedLinks.TryAdd(uri.AbsoluteUri, new CrawlItem(uri.AbsoluteUri, -1));
+                ProcessedLinks.TryAdd(uri.AbsoluteUri, new CrawlItem(SourceType.SiteMap, uri.AbsoluteUri, -1, HttpStatusCode.OK));
                 continue;
             }
 
