@@ -1,4 +1,4 @@
-﻿using Shared.Models;
+﻿using Crawler.Shared.Models;
 
 namespace Crawler.Interfaces.Services;
 

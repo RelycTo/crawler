@@ -1,5 +1,6 @@
 ﻿using Crawler.Interfaces.Services;
-using Shared.Models;
+using Crawler.Shared.Handlers;
+using Crawler.Shared.Models;
 
 namespace Crawler.Services.Handlers;
 
@@ -22,7 +23,7 @@ public class PostProcessHandler : AbstractCrawlHandler<CrawlHandlerContext>
     private static void UpdateContext(CrawlHandlerContext context, IEnumerable<CrawlItem> items)
     {
         context
-            .SetStep(context.Step + 1)
-            .SetProcessedItems(context.Step, items);
+            .SetProcessedItems(context.Step, items)
+            .SetStep(context.Step + 1);
     }
 }

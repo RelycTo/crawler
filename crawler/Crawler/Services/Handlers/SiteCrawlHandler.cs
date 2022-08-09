@@ -1,7 +1,8 @@
 ﻿using System.Net.Mime;
 using Crawler.Interfaces;
 using Crawler.Interfaces.Services;
-using Shared.Models;
+using Crawler.Shared.Handlers;
+using Crawler.Shared.Models;
 
 namespace Crawler.Services.Handlers;
 

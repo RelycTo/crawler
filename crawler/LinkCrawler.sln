@@ -7,11 +7,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Crawler", "Crawler\Crawler.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Crawler.Tests", "Crawler.Tests\Crawler.Tests.csproj", "{30CC9DEC-E25D-4632-9E1F-5445B9151E07}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataAccess", "DataAccess\DataAccess.csproj", "{BFB88E1B-30AE-4614-92E0-459EA575CB10}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Crawler.DataAccess", "Crawler.DataAccess\Crawler.DataAccess.csproj", "{BFB88E1B-30AE-4614-92E0-459EA575CB10}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shared", "Shared\Shared.csproj", "{CB355C1A-8AE1-47E7-90D7-846F42AC9E83}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Crawler.Shared", "Crawler.Shared\Crawler.Shared.csproj", "{CB355C1A-8AE1-47E7-90D7-846F42AC9E83}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Crawler.UI", "Crawler.UI\Crawler.UI.csproj", "{C6ED7D5D-0A9E-41AA-AE03-93EC005F4824}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Crawler.UI", "Crawler.UI\Crawler.UI.csproj", "{C6ED7D5D-0A9E-41AA-AE03-93EC005F4824}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
