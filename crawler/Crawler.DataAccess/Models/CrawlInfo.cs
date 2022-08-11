@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using Crawler.Shared.Models;
+﻿using Crawler.Shared.Models;
 
 namespace Crawler.DataAccess.Models;
 
