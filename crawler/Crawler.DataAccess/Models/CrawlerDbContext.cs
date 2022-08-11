@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Reflection;
+using Microsoft.EntityFrameworkCore;
 
 namespace Crawler.DataAccess.Models;
 
@@ -13,17 +14,7 @@ public class CrawlerDbContext: DbContext
     {
         base.OnModelCreating(builder);
 
-        builder.Entity<CrawlInfo>().Property(p => p.CreatedUtc)
-            .ValueGeneratedOnAdd()
-            .HasDefaultValueSql("GETUTCDATE()");
-
-        builder.Entity<CrawlInfo>().Property(p => p.UpdatedUtc)
-            .ValueGeneratedOnAddOrUpdate()
-            .HasDefaultValueSql("GETUTCDATE()");
-
-        builder.Entity<CrawlDetail>().Property(p => p.CreatedUtc)
-            .ValueGeneratedOnAdd()
-            .HasDefaultValueSql("GETUTCDATE()");
+        builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
     }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

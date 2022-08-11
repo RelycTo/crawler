@@ -1,13 +1,13 @@
 ﻿using Crawler.Shared.Interfaces;
 using Crawler.Shared.Models;
 
-namespace Crawler.Services;
+namespace Crawler.UI.Services;
 
-public class CrawlerApp
+public class CrawlerScheduler
 {
     private readonly ICrawlHandler<CrawlHandlerContext> _handler;
 
-    public CrawlerApp(ICrawlHandler<CrawlHandlerContext> handler)
+    public CrawlerScheduler(ICrawlHandler<CrawlHandlerContext> handler)
     {
         _handler = handler;
     }

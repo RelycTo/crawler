@@ -55,7 +55,7 @@ namespace Crawler.DataAccess.Migrations
 
                     b.HasIndex("CrawlInfoId");
 
-                    b.ToTable("CrawlDetails");
+                    b.ToTable("CrawlDetails", (string)null);
                 });
 
             modelBuilder.Entity("Crawler.DataAccess.Models.CrawlInfo", b =>
@@ -85,7 +85,7 @@ namespace Crawler.DataAccess.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("CrawlInfo");
+                    b.ToTable("CrawlInfo", (string)null);
                 });
 
             modelBuilder.Entity("Crawler.DataAccess.Models.CrawlDetail", b =>

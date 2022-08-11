@@ -26,7 +26,7 @@ var host = Host.CreateDefaultBuilder(args)
     .ConfigureServices((context, services) =>
     {
         services.AddHttpClient<PageLoader>();
-        services.AddSingleton<CrawlerApp>();
+        services.AddSingleton<CrawlerScheduler>();
         services.AddSingleton<CrawlerUI>();
         services.AddSingleton<ReportFormatter>();
         services.AddSingleton<LinkRestorer>();

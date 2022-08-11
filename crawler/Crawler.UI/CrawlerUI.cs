@@ -1,13 +1,14 @@
 ﻿using Crawler.Services;
+using Crawler.UI.Services;
 
 namespace Crawler.UI;
 
 public class CrawlerUI
 {
     private const int MaxThreads = 10;
-    private readonly CrawlerApp _crawler;
+    private readonly CrawlerScheduler _crawler;
 
-    public CrawlerUI(CrawlerApp crawler)
+    public CrawlerUI(CrawlerScheduler crawler)
     {
         _crawler = crawler;
     }
