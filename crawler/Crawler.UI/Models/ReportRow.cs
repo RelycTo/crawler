@@ -1,4 +1,4 @@
-﻿namespace Crawler.Models;
+﻿namespace Crawler.UI.Models;
 
 public class ReportRow
 {

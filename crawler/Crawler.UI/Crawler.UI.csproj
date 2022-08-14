@@ -9,7 +9,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Crawler.Shared\Crawler.Shared.csproj" />
-    <ProjectReference Include="..\Crawler\Crawler.csproj" />
   </ItemGroup>
 
   <ItemGroup>

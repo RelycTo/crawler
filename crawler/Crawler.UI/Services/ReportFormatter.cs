@@ -1,5 +1,5 @@
-﻿using Crawler.Models;
-using Crawler.Shared.Models;
+﻿using Crawler.Shared.Models;
+using Crawler.UI.Models;
 
 namespace Crawler.UI.Services;
 

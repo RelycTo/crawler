@@ -1,5 +1,6 @@
-﻿using Crawler.Models;
-using Crawler.Shared.Interfaces;
+﻿using Crawler.Shared.Interfaces;
+using Crawler.Shared.Models;
+using Crawler.UI.Models;
 
 namespace Crawler.UI.Services;
 
