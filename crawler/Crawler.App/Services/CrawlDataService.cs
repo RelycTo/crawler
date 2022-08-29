@@ -3,7 +3,7 @@ using Crawler.App.Services.Repositories;
 
 namespace Crawler.App.Services;
 
-public class CrawlDataService : ICrawlDataService
+public class CrawlDataService
 {
     private readonly ICrawlInfoRepository _infoRepository;
     private readonly ICrawlDetailsRepository _detailsRepository;

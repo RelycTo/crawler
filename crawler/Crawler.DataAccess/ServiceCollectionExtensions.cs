@@ -6,7 +6,6 @@ using Crawler.DataAccess.Services.Handlers;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using CrawlDataService = Crawler.DataAccess.Services.CrawlDataService;
 
 namespace Crawler.DataAccess;
 
@@ -19,7 +18,6 @@ public static class ServiceCollectionExtensions
         services.AddDbContext<CrawlerDbContext>(options => options.UseSqlServer(connection));
         services.AddTransient<ICrawlDetailsRepository, CrawlDetailsRepository>();
         services.AddTransient<ICrawlInfoRepository, CrawlInfoRepository>();
-        services.AddScoped<ICrawlDataService, CrawlDataService>();
         services.AddScoped<PreProcessHandler>();
         services.AddScoped<PersistHandler>();
     }

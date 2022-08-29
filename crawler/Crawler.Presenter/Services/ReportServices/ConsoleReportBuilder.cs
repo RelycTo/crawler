@@ -8,9 +8,9 @@ public class ConsoleReportBuilder
 {
     private readonly ConsoleReport _report;
     private readonly ReportFormatter _formatter;
-    private readonly ICrawlDataService _crawlDataService;
+    private readonly CrawlDataService _crawlDataService;
 
-    public ConsoleReportBuilder(ICrawlDataService crawlDataService, ReportFormatter formatter, ConsoleReport report)
+    public ConsoleReportBuilder(CrawlDataService crawlDataService, ReportFormatter formatter, ConsoleReport report)
     {
         _formatter = formatter;
         _crawlDataService = crawlDataService;

@@ -5,9 +5,11 @@ using Crawler.App.Handlers;
 using Crawler.App.Infrastructure;
 using Crawler.App.Infrastructure.Loaders;
 using Crawler.App.Infrastructure.Parsers;
+using Crawler.App.Services;
 using Crawler.App.Services.Processors;
 using Crawler.DataAccess;
 using Crawler.DataAccess.Models;
+using Crawler.DataAccess.Services;
 using Crawler.DataAccess.Services.Handlers;
 using Crawler.Entities.Handlers;
 using Crawler.Presenter.Handlers;
@@ -17,8 +19,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using ConsoleReportBuilder = Crawler.Presenter.Services.ReportServices.ConsoleReportBuilder;
-using CrawlerUI = Crawler.Presenter.Services.CrawlerUI;
 
 var host = Host.CreateDefaultBuilder(args)
     .ConfigureAppConfiguration((context, builder) =>
@@ -36,6 +36,7 @@ var host = Host.CreateDefaultBuilder(args)
         services.AddSingleton<HtmlLinkParser>();
         services.AddSingleton<XmlLinkParser>();
         services.AddScoped<ConsoleReportBuilder>();
+        services.AddScoped<CrawlDataService>();
         services.AddScoped<ILinkProcessor<HtmlLinkParser>, PageProcessor>();
         services.AddScoped<ILinkProcessor<XmlLinkParser>, SiteMapProcessor>();
         services.AddScoped<ILinkProcessor, PostProcessor>();
