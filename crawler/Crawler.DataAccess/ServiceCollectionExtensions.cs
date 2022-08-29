@@ -1,11 +1,12 @@
-﻿using Crawler.DataAccess.Models;
+﻿using Crawler.App.Services;
+using Crawler.App.Services.Repositories;
+using Crawler.DataAccess.Models;
 using Crawler.DataAccess.Repositories;
-using Crawler.DataAccess.Services;
 using Crawler.DataAccess.Services.Handlers;
-using Crawler.Shared.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using CrawlDataService = Crawler.DataAccess.Services.CrawlDataService;
 
 namespace Crawler.DataAccess;
 

@@ -1,5 +1,5 @@
-﻿using Crawler.Tests.Fakes;
-using Crawler.UI.Services;
+﻿using Crawler.Presenter.Services.ReportServices;
+using Crawler.Tests.Fakes;
 
 namespace Crawler.Tests.UI;
 

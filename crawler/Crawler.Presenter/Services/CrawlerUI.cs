@@ -1,10 +1,16 @@
-﻿namespace Crawler.UI.Services;
+﻿namespace Crawler.Presenter.Services;
 
 public class CrawlerUI
 {
     private const int MaxThreads = 10;
+    private readonly CrawlerScheduler _scheduler;
 
-    public async Task RunAsync(CrawlerSheduler scheduler, CancellationToken token = default)
+    public CrawlerUI(CrawlerScheduler scheduler)
+    {
+        _scheduler = scheduler;
+    }
+
+    public async Task RunAsync(CancellationToken token = default)
     {
         while (true)
         {
@@ -18,7 +24,7 @@ public class CrawlerUI
                 if (!Uri.IsWellFormedUriString(input, UriKind.Absolute))
                     throw new ArgumentException("Input URL is not in the correct format.");
 
-                await scheduler.RunAsync(input, MaxThreads, token);
+                await _scheduler.RunAsync(input, MaxThreads, token);
             }
             catch (Exception e)
             {

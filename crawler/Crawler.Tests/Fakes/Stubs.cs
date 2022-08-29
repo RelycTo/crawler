@@ -1,6 +1,7 @@
 ﻿using System.Net;
-using Crawler.DataAccess.Models;
-using Crawler.Shared.Models;
+using Crawler.App.DTOs;
+using Crawler.Entities.Models;
+using Crawler.Entities.Models.Enums;
 
 namespace Crawler.Tests.Fakes;
 

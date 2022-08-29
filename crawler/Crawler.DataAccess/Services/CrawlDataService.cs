@@ -1,13 +1,13 @@
-﻿using Crawler.DataAccess.Repositories;
-using Crawler.Shared.Interfaces;
-using Crawler.Shared.Models;
+﻿using Crawler.App.DTOs;
+using Crawler.App.Services;
+using Crawler.App.Services.Repositories;
 
 namespace Crawler.DataAccess.Services;
 
 public class CrawlDataService : ICrawlDataService
 {
-    private ICrawlInfoRepository _infoRepository;
-    private ICrawlDetailsRepository _detailsRepository;
+    private readonly ICrawlInfoRepository _infoRepository;
+    private readonly ICrawlDetailsRepository _detailsRepository;
 
     public CrawlDataService(ICrawlInfoRepository infoRepository, ICrawlDetailsRepository detailsRepository)
     {

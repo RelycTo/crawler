@@ -1,4 +1,6 @@
-﻿using Crawler.DataAccess.Models;
+﻿using Crawler.App.Services.Repositories;
+using Crawler.DataAccess.Models;
+using Crawler.Entities.Models;
 using EFCore.BulkExtensions;
 using Microsoft.EntityFrameworkCore;
 

@@ -1,7 +1,8 @@
-﻿using Crawler.DataAccess.Models;
-using Crawler.DataAccess.Repositories;
-using Crawler.Shared.Handlers;
-using Crawler.Shared.Models;
+﻿using Crawler.App.DTOs;
+using Crawler.App.Services.Repositories;
+using Crawler.Entities.Handlers;
+using Crawler.Entities.Models;
+using Crawler.Entities.Models.Enums;
 
 namespace Crawler.DataAccess.Services.Handlers;
 

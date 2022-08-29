@@ -1,6 +1,4 @@
-﻿using Crawler.Shared.Models;
-
-namespace Crawler.Shared.Interfaces;
+﻿namespace Crawler.Shared.Interfaces;
 
 public interface ICrawlDataService
 {

@@ -1,5 +1,7 @@
-﻿using Crawler.DataAccess.Models;
-using Crawler.Shared.Models;
+﻿using Crawler.App.DTOs;
+using Crawler.App.Services.Repositories;
+using Crawler.DataAccess.Models;
+using Crawler.Entities.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace Crawler.DataAccess.Repositories;
