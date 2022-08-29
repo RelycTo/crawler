@@ -1,5 +1,6 @@
 ﻿using Crawler.App.DTOs;
 using Crawler.Entities.Models.Enums;
+using Crawler.Presenter.Models;
 
 namespace Crawler.Presenter.Services.ReportServices;
 

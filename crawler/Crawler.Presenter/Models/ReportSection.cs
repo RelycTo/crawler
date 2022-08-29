@@ -1,4 +1,4 @@
-﻿namespace Crawler.App.DTOs;
+﻿namespace Crawler.Presenter.Models;
 
 public class ReportSection
 {

@@ -1,5 +1,6 @@
 ﻿using Crawler.App.DTOs;
 using Crawler.App.Services;
+using Crawler.Presenter.Models;
 
 namespace Crawler.Presenter.Services.ReportServices;
 
