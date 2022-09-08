@@ -1,4 +1,4 @@
-﻿using Crawler.App.Infrastructure.Parsers;
+﻿using Crawler.Infrastructure.Parsers;
 
 namespace Crawler.Tests.Crawler;
 

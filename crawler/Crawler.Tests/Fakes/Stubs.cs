@@ -1,7 +1,7 @@
 ﻿using System.Net;
-using Crawler.App.DTOs;
-using Crawler.Entities.Models;
-using Crawler.Entities.Models.Enums;
+using Crawler.Application.Models;
+using Crawler.Domain.Models;
+using Crawler.Domain.Models.Enums;
 
 namespace Crawler.Tests.Fakes;
 
@@ -34,18 +34,18 @@ internal static class Stubs
     </url>
     </urlset>";
 
-    public static IReadOnlyCollection<CrawlItem> CrawledSiteStubCollection = new[]
+    public static IReadOnlyCollection<CrawlItemDto> CrawledSiteStubCollection = new[]
     {
-        new CrawlItem(SourceType.Site, "https://test.com", 20, HttpStatusCode.OK),
-        new CrawlItem(SourceType.Site, "https://test.com/api/", 25, HttpStatusCode.OK),
-        new CrawlItem(SourceType.Site, "https://test.com/api/directory", 40, HttpStatusCode.OK)
+        new CrawlItemDto(SourceType.Site, "https://test.com", 20, HttpStatusCode.OK),
+        new CrawlItemDto(SourceType.Site, "https://test.com/api/", 25, HttpStatusCode.OK),
+        new CrawlItemDto(SourceType.Site, "https://test.com/api/directory", 40, HttpStatusCode.OK)
     };
 
-    public static IReadOnlyCollection<CrawlItem> CrawledSiteMapStubCollection = new[]
+    public static IReadOnlyCollection<CrawlItemDto> CrawledSiteMapStubCollection = new[]
     {
-        new CrawlItem(SourceType.SiteMap, "https://test.com", -1, HttpStatusCode.OK),
-        new CrawlItem(SourceType.SiteMap, "https://test.com/api/", -1, HttpStatusCode.OK),
-        new CrawlItem(SourceType.SiteMap, "https://test.com/api/explain", -1, HttpStatusCode.OK)
+        new CrawlItemDto(SourceType.SiteMap, "https://test.com", -1, HttpStatusCode.OK),
+        new CrawlItemDto(SourceType.SiteMap, "https://test.com/api/", -1, HttpStatusCode.OK),
+        new CrawlItemDto(SourceType.SiteMap, "https://test.com/api/explain", -1, HttpStatusCode.OK)
     };
 
     public static IReadOnlyCollection<CrawlDetailDto> ReportItems = new[]
@@ -149,5 +149,4 @@ internal static class Stubs
 
         return context;
     }
-
 }

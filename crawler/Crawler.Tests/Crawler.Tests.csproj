@@ -27,8 +27,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Crawler.App\Crawler.App.csproj" />
-    <ProjectReference Include="..\Crawler.Presenter\Crawler.Presenter.csproj" />
+    <ProjectReference Include="..\Crawler.Application\Crawler.Application.csproj" />
+    <ProjectReference Include="..\Crawler.Infrastructure\Crawler.Infrastructure.csproj" />
+    <ProjectReference Include="..\Crawler.Persistence\Crawler.Persistence.csproj" />
+    <ProjectReference Include="..\Crawler.Presentation\Crawler.Presentation.csproj" />
   </ItemGroup>
 
 </Project>

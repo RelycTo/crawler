@@ -1,8 +1,8 @@
 ﻿using System.Net;
 using System.Net.Mime;
-using Crawler.App.Infrastructure.Loaders;
-using Crawler.App.Services.Processors;
-using Crawler.Entities.Models.Enums;
+using Crawler.Application.Services.Processors;
+using Crawler.Domain.Models.Enums;
+using Crawler.Infrastructure.Loaders;
 using Crawler.Tests.Fakes;
 using Moq;
 using Moq.Protected;

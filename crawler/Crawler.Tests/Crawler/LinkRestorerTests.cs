@@ -1,4 +1,4 @@
-﻿using Crawler.App.Infrastructure;
+﻿using Crawler.Infrastructure.Utilities;
 
 namespace Crawler.Tests.Crawler;
 

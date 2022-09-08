@@ -1,6 +1,6 @@
 ﻿using System.Net;
 using System.Net.Mime;
-using Crawler.App.Infrastructure.Loaders;
+using Crawler.Infrastructure.Loaders;
 using Crawler.Tests.Fakes;
 using Moq;
 using Moq.Protected;

@@ -1,6 +1,6 @@
-﻿using Crawler.App.DTOs;
-using Crawler.App.Services;
-using Crawler.App.Services.Repositories;
+﻿using Crawler.Application.Models;
+using Crawler.Application.Services;
+using Crawler.Application.Services.Repositories;
 using Crawler.Tests.Fakes;
 using Moq;
 

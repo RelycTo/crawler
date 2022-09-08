@@ -1,5 +1,4 @@
-﻿using Crawler.App.Services;
-using Crawler.App.Services.Repositories;
+﻿using Crawler.App.Services.Repositories;
 using Crawler.DataAccess.Models;
 using Crawler.DataAccess.Repositories;
 using Crawler.DataAccess.Services.Handlers;

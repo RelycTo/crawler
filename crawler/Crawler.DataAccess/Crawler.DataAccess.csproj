@@ -16,8 +16,4 @@
     </PackageReference>
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Crawler.App\Crawler.App.csproj" />
-  </ItemGroup>
-
 </Project>
