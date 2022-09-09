@@ -45,6 +45,8 @@ if (app.Environment.IsDevelopment())
     app.UseMigrationsEndPoint();
 }
 
+DependencyContainer.EnsureMigration(app.Services);
+
 app.MapControllers();
 
 app.UseCors();

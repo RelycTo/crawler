@@ -15,6 +15,7 @@ using Crawler.Persistence.Models;
 using Crawler.Persistence.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 
 namespace Crawler.Infrastructure;
 
@@ -63,5 +64,14 @@ public class DependencyContainer
     {
 
         services.AddDbContext<CrawlerDbContext>(options => options.UseSqlServer(connectionString));
+    }
+
+    public static void EnsureMigration(IServiceProvider provider)
+    {
+        using var scope = provider.CreateScope();
+        var services = scope.ServiceProvider;
+
+        var context = services.GetRequiredService<CrawlerDbContext>();
+        context.Database.Migrate();
     }
 }
