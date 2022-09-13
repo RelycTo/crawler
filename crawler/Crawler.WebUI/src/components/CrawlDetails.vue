@@ -36,7 +36,7 @@ export default {
   created() {
     this.$store.dispatch('fetchDetails', this.id)
         .catch(error => {
-          this.$store.dispatch('setError', error.data.message)
+          this.$store.commit('setError', error.data.message)
         })
   }
 }

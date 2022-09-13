@@ -74,7 +74,7 @@
         },
         methods: {
             closeError() {
-                this.$store.dispatch('clearError')
+                this.$store.commit('clearError')
             },
         }
     }

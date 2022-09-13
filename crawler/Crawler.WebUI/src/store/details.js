@@ -129,15 +129,6 @@ export default {
                   items: state.timings
               },
           ]
-        },
-        siteMapUniques(state) {
-            return state.siteMapUniques
-        },
-        siteUniques(state) {
-            return state.siteUniques
-        },
-        timings(state) {
-            return state.timings
         }
     }
 }
