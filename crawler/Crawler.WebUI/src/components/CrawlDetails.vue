@@ -5,7 +5,7 @@
         <h1>Crawl details</h1>
       </v-flex>
     </v-row>
-    <details-block v-for="detailsItem in details" :details="detailsItem" :key="detailsItem.id"></details-block>
+    <details-block v-for="detailsItem in details" :details="detailsItem" :key="detailsItem.id" />
   </v-container>
   <div v-else class="text-center">
     <v-progress-circular
@@ -13,7 +13,7 @@
         :size="100"
         :width="4"
         color="blue-grey"
-    ></v-progress-circular>
+    />
   </div>
 </template>
 

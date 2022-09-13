@@ -77,7 +77,7 @@
             :size="100"
             :width="4"
             color="blue-grey"
-        ></v-progress-circular>
+        />
       </div>
     </v-container>
   </div>
@@ -147,13 +147,6 @@ export default {
     },
     validate() {
       this.$refs.form.validate()
-    },
-    reset() {
-      this.$refs.form.reset()
-    }
-    ,
-    resetValidation() {
-      this.$refs.form.resetValidation()
     }
   }
 }
