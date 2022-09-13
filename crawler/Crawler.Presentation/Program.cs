@@ -30,7 +30,7 @@ builder.Services.AddCors(options =>
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 
-DependencyContainer.AddDbContext(builder.Services, builder.Configuration.GetConnectionString("CrawlDB"));
+DependencyContainer.AddDbContext(builder.Services, builder.Configuration, "CrawlDB");
 DependencyContainer.AddServices(builder.Services);
 
 

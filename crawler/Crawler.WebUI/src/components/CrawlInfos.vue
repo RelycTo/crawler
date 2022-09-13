@@ -144,9 +144,6 @@ export default {
               this.$store.dispatch('setError', error.data.message)
             })
       }
-    },
-    validate() {
-      this.$refs.form.validate()
     }
   }
 }

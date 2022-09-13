@@ -7,6 +7,7 @@ using Crawler.Application.Services.Processors;
 using Crawler.Application.Services.Repositories;
 using Crawler.Application.Services.Utilities;
 using Crawler.Domain.Handlers;
+using Crawler.Infrastructure.Extensions;
 using Crawler.Infrastructure.Loaders;
 using Crawler.Infrastructure.Parsers;
 using Crawler.Infrastructure.Utilities;
@@ -14,6 +15,7 @@ using Crawler.Persistence.Handlers;
 using Crawler.Persistence.Models;
 using Crawler.Persistence.Repositories;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
@@ -60,8 +62,9 @@ public class DependencyContainer
         });
     }
 
-    public static void AddDbContext(IServiceCollection services, string connectionString)
+    public static void AddDbContext(IServiceCollection services, IConfiguration configuration, string connection)
     {
+        var connectionString = configuration.ConnectionStringValidate(connection);
 
         services.AddDbContext<CrawlerDbContext>(options => options.UseSqlServer(connectionString));
     }
