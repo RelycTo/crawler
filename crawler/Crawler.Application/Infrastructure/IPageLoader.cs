@@ -1,6 +1,4 @@
-﻿using Crawler.Application.Models;
-
-namespace Crawler.Application.Services.Loaders;
+﻿namespace Crawler.Application.Infrastructure;
 
 public interface IPageLoader
 {

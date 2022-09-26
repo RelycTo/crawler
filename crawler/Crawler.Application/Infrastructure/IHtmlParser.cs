@@ -1,6 +1,5 @@
-﻿namespace Crawler.Application.Services.Parsers
+﻿namespace Crawler.Application.Infrastructure;
+
+public interface IHtmlParser : ILinkParser
 {
-    public interface IHtmlParser : ILinkParser
-    {
-    }
 }

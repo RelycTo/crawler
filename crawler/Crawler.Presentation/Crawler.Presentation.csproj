@@ -22,7 +22,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Crawler.Application\Crawler.Application.csproj" />
-    <ProjectReference Include="..\Crawler.Infrastructure\Crawler.Infrastructure.csproj" />
+    <ProjectReference Include="..\Crawler.Infrastructure.IoC\Crawler.Infrastructure.IoC.csproj" />
   </ItemGroup>
 
 </Project>

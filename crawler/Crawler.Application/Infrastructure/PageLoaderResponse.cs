@@ -1,6 +1,6 @@
 ﻿using System.Net;
 
-namespace Crawler.Application.Models;
+namespace Crawler.Application.Infrastructure;
 
 public class PageLoaderResponse
 {

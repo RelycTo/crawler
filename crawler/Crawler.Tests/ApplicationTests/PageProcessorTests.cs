@@ -2,16 +2,16 @@
 using System.Net.Mime;
 using Crawler.Application.Crawl;
 using Crawler.Application.Crawl.Processors;
+using Crawler.Application.Infrastructure;
 using Crawler.Domain.Models.Enums;
 using Crawler.Infrastructure.Http;
 using Crawler.Infrastructure.Parsers;
-using Crawler.Infrastructure.Utilities;
 using Crawler.Tests.Fakes;
 using Moq;
 using Moq.Protected;
 using Mocks = Crawler.Tests.Fakes.Mocks;
 
-namespace Crawler.Tests.Crawler;
+namespace Crawler.Tests.ApplicationTests;
 
 public class PageProcessorTests
 {
@@ -28,7 +28,8 @@ public class PageProcessorTests
         var parser = new HtmlLinkParser();
         var linkRestorer = new LinkRestorer();
         var processor = new PageProcessor(loader, parser, linkRestorer);
-        var options = new CrawlOptionsDto("http://test.com", "http://test.com", 1, ProcessStep.Site, new[] { MediaTypeNames.Text.Xml }); 
+        var options = new CrawlOptionsDto("http://test.com", "http://test.com", 1, ProcessStep.Site,
+            new[] { MediaTypeNames.Text.Xml });
 
         var actual = (await processor.CrawlAsync(options, CancellationToken.None)).ToArray();
 

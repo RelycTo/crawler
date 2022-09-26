@@ -1,23 +1,22 @@
-﻿namespace Crawler.Application.Models;
+﻿using Crawler.Domain.Models.Enums;
+
+namespace Crawler.Application.Crawl;
 
 public class CrawlOptionsDto
 {
-    public CrawlOptionsDto(string url, string siteMapPageName, int taskCount)
+    public CrawlOptionsDto(string url, string baseUrl, int taskCount, ProcessStep step,
+        IReadOnlyCollection<string> excludedMediaTypes)
     {
         Uri = new Uri(url);
         TaskCount = taskCount;
-        SiteMapUri = new Uri(url.TrimEnd('/') + '/' + siteMapPageName);
-        ExcludedMediaTypes = Array.Empty<string>();
+        BaseUri = new Uri(baseUrl);
+        ExcludedMediaTypes = excludedMediaTypes;
+        Step = step;
     }
 
     public IReadOnlyCollection<string> ExcludedMediaTypes { get; private set; }
     public Uri Uri { get; }
-    public Uri SiteMapUri { get; }
+    public Uri BaseUri { get; }
     public int TaskCount { get; }
-
-    public CrawlOptionsDto SetExcludedMediaTypes(IEnumerable<string> mediaTypes)
-    {
-        ExcludedMediaTypes = mediaTypes.ToArray();
-        return this;
-    }
+    public ProcessStep Step { get; }
 }

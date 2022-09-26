@@ -1,6 +1,6 @@
 using Crawler.Infrastructure.Parsers;
 
-namespace Crawler.Tests.Crawler;
+namespace Crawler.Tests.InfrastructureTests;
 
 public class HtmlParserTests
 {
@@ -29,7 +29,9 @@ public class HtmlParserTests
     {
         var parser = new HtmlLinkParser();
 
-        var actual = parser.GetLinks("<html><body>The given content contains one anchor element <a href='www.test.com'>click me</a></body></html>")
+        var actual = parser
+            .GetLinks(
+                "<html><body>The given content contains one anchor element <a href='www.test.com'>click me</a></body></html>")
             .ToArray();
 
         Assert.Single(actual);

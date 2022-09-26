@@ -10,6 +10,4 @@ public class CrawlProcessRequest
 
     public int TaskCount { get; set; } = 10;
     public string SiteMapPageName { get; set; } = "sitemap.xml";
-
-    public Uri ProcessUri => new(Url);
 }

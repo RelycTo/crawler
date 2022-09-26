@@ -1,6 +1,6 @@
-﻿using Crawler.Infrastructure.Utilities;
+﻿using Crawler.Application.Infrastructure;
 
-namespace Crawler.Tests.Crawler;
+namespace Crawler.Tests.ApplicationTests;
 
 public class LinkRestorerTests
 {

@@ -7,5 +7,5 @@ public enum ProcessStep
     SiteMap,
     PostProcess,
     Persist,
-    Output
+    Complete
 }

@@ -4,49 +4,47 @@ using Crawler.Application.Data;
 using Crawler.Application.Data.Repositories;
 using Crawler.Application.Infrastructure;
 using Crawler.Infrastructure.Extensions;
-using Crawler.Infrastructure.Loaders;
+using Crawler.Infrastructure.Http;
 using Crawler.Infrastructure.Parsers;
-using Crawler.Infrastructure.Utilities;
 using Crawler.Persistence.Models;
 using Crawler.Persistence.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Crawler.Infrastructure
+namespace Crawler.Infrastructure;
+
+public class DependencyContainer
 {
-    public class DependencyContainer
+    public static void AddServices(IServiceCollection services)
     {
-        public static void AddServices(IServiceCollection services)
-        {
-            services.AddHttpClient<IPageLoader, PageLoader>();
-            services.AddSingleton<ILinkRestorer, LinkRestorer>();
-            services.AddSingleton<IHtmlParser, HtmlLinkParser>();
-            services.AddSingleton<IXmlParser, XmlLinkParser>();
-            services.AddScoped<CrawlDataService>();
-            services.AddScoped<ILinkProcessor<IHtmlParser>, PageProcessor>();
-            services.AddScoped<ILinkProcessor<IXmlParser>, SiteMapProcessor>();
-            services.AddScoped<PostProcessor>();
-            services.AddScoped<CrawlService>();
+        services.AddHttpClient<IPageLoader, PageLoader>();
+        services.AddSingleton<LinkRestorer>();
+        services.AddSingleton<IHtmlParser, HtmlLinkParser>();
+        services.AddSingleton<IXmlParser, XmlLinkParser>();
+        services.AddScoped<CrawlDataService>();
+        services.AddScoped<ILinkProcessor<IHtmlParser>, PageProcessor>();
+        services.AddScoped<ILinkProcessor<IXmlParser>, SiteMapProcessor>();
+        services.AddScoped<PostProcessor>();
+        services.AddScoped<CrawlService>();
 
-            services.AddTransient<ICrawlDetailsRepository, CrawlDetailsRepository>();
-            services.AddTransient<ICrawlInfoRepository, CrawlInfoRepository>();
-        }
+        services.AddTransient<ICrawlDetailsRepository, CrawlDetailsRepository>();
+        services.AddTransient<ICrawlInfoRepository, CrawlInfoRepository>();
+    }
 
-        public static void AddDbContext(IServiceCollection services, IConfiguration configuration, string connection)
-        {
-            var connectionString = configuration.ConnectionStringValidate(connection);
+    public static void AddDbContext(IServiceCollection services, IConfiguration configuration, string connection)
+    {
+        var connectionString = configuration.ConnectionStringValidate(connection);
 
-            services.AddDbContext<CrawlerDbContext>(options => options.UseSqlServer(connectionString));
-        }
+        services.AddDbContext<CrawlerDbContext>(options => options.UseSqlServer(connectionString));
+    }
 
-        public static void EnsureMigration(IServiceProvider provider)
-        {
-            using var scope = provider.CreateScope();
-            var services = scope.ServiceProvider;
+    public static void EnsureMigration(IServiceProvider provider)
+    {
+        using var scope = provider.CreateScope();
+        var services = scope.ServiceProvider;
 
-            var context = services.GetRequiredService<CrawlerDbContext>();
-            context.Database.Migrate();
-        }
+        var context = services.GetRequiredService<CrawlerDbContext>();
+        context.Database.Migrate();
     }
 }

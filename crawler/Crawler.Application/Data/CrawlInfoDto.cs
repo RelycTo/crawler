@@ -1,6 +1,6 @@
 ﻿using Crawler.Domain.Models.Enums;
 
-namespace Crawler.Application.Models;
+namespace Crawler.Application.Data;
 
 public class CrawlInfoDto
 {

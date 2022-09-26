@@ -1,8 +1,6 @@
-﻿using Crawler.Application.Infrastructure;
+﻿namespace Crawler.Application.Infrastructure;
 
-namespace Crawler.Infrastructure.Utilities;
-
-public class LinkRestorer : ILinkRestorer
+public class LinkRestorer
 {
     private const string SiteMap = "sitemap.xml";
 

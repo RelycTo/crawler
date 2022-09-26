@@ -6,7 +6,7 @@ using Moq;
 using Moq.Protected;
 using Mocks = Crawler.Tests.Fakes.Mocks;
 
-namespace Crawler.Tests.Crawler;
+namespace Crawler.Tests.InfrastructureTests;
 
 public class PageLoaderTests
 {

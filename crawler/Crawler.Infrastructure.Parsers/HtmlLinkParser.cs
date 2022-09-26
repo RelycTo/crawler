@@ -1,47 +1,46 @@
 ﻿using Crawler.Application.Infrastructure;
 using HtmlAgilityPack;
 
-namespace Crawler.Infrastructure.Parsers
+namespace Crawler.Infrastructure.Parsers;
+
+public class HtmlLinkParser : IHtmlParser
 {
-    public class HtmlLinkParser : IHtmlParser
+    private const string Href = "href";
+
+    private readonly IEnumerable<string> _excludeLinks = new List<string>
     {
-        private const string Href = "href";
+        "mailto:",
+        "skype:",
+        "tel:",
+        "sms:"
+    };
 
-        private readonly IEnumerable<string> _excludeLinks = new List<string>
+    public IEnumerable<string> GetLinks(string content)
+    {
+        if (string.IsNullOrWhiteSpace(content))
         {
-            "mailto:",
-            "skype:",
-            "tel:",
-            "sms:"
-        };
+            yield break;
+        }
 
-        public IEnumerable<string> GetLinks(string content)
+        var document = new HtmlDocument();
+        document.LoadHtml(content);
+        var nodes = document.DocumentNode.SelectNodes($"//a[@{Href}]");
+
+        if (nodes == null)
         {
-            if (string.IsNullOrWhiteSpace(content))
+            yield break;
+        }
+
+        foreach (var node in nodes
+                     .Where(n => n.Attributes.Contains(Href))
+                     .Select(n => n.Attributes[Href]))
+        {
+            if (_excludeLinks.Any(excluded => node.Value.StartsWith(excluded)))
             {
-                yield break;
+                continue;
             }
 
-            var document = new HtmlDocument();
-            document.LoadHtml(content);
-            var nodes = document.DocumentNode.SelectNodes($"//a[@{Href}]");
-
-            if (nodes == null)
-            {
-                yield break;
-            }
-
-            foreach (var node in nodes
-                         .Where(n => n.Attributes.Contains(Href))
-                         .Select(n => n.Attributes[Href]))
-            {
-                if (_excludeLinks.Any(excluded => node.Value.StartsWith(excluded)))
-                {
-                    continue;
-                }
-
-                yield return node.Value;
-            }
+            yield return node.Value;
         }
     }
 }

@@ -8,7 +8,7 @@ using Moq;
 using Moq.Protected;
 using Mocks = Crawler.Tests.Fakes.Mocks;
 
-namespace Crawler.Tests.Crawler;
+namespace Crawler.Tests.ApplicationTests;
 
 public class PostProcessorTests
 {
@@ -24,7 +24,8 @@ public class PostProcessorTests
         var loader = new PageLoader(httpClient);
         var processor = new PostProcessor(loader);
 
-        var actual = (await processor.ProcessAsync(Stubs.CrawledSiteStubCollection, Stubs.CrawledSiteMapStubCollection, new[] { MediaTypeNames.Text.Xml },
+        var actual = (await processor.ProcessAsync(Stubs.CrawledSiteStubCollection, Stubs.CrawledSiteMapStubCollection,
+            new[] { MediaTypeNames.Text.Xml },
             CancellationToken.None)).ToArray();
 
         Assert.NotNull(actual);

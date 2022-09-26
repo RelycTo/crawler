@@ -1,5 +1,6 @@
 ﻿using System.Net;
-using Crawler.Application.Models;
+using Crawler.Application.Crawl;
+using Crawler.Application.Data;
 using Crawler.Domain.Models;
 using Crawler.Domain.Models.Enums;
 
@@ -135,18 +136,4 @@ internal static class Stubs
             StatusCode = HttpStatusCode.OK
         },
     };
-
-
-
-    public static CrawlHandlerContext GetCrawlContext(ProcessStep step, IEnumerable<string> excludedMediaTypes)
-    {
-        var uri = step == ProcessStep.SiteMap ? new Uri("https://text.com/sitemap.xml") : new Uri("https://text.com/");
-        var context = CrawlHandlerContext.Create(uri, 1);
-        context
-            .SetStep(step)
-            .Options
-            .SetExcludedMediaTypes(excludedMediaTypes);
-
-        return context;
-    }
 }

@@ -1,9 +1,9 @@
-﻿using Crawler.Application.Models;
-using Crawler.Application.Services.Repositories;
+﻿using Crawler.Application.Crawl;
+using Crawler.Application.Data.Repositories;
 using Crawler.Domain.Models;
 using Crawler.Domain.Models.Enums;
 
-namespace Crawler.Application.Services;
+namespace Crawler.Application.Data;
 
 public class CrawlDataService
 {
@@ -31,11 +31,13 @@ public class CrawlDataService
             }) ?? Array.Empty<CrawlInfoDto>();
     }
 
-    public async Task<CrawlInfoDto> GetCrawlInfoAsync(int id, CancellationToken token = default) {
+    public async Task<CrawlInfoDto> GetCrawlInfoAsync(int id, CancellationToken token = default)
+    {
         var result = await _infoRepository.GetAsync(id, token);
 
         return result != null
-            ? new CrawlInfoDto {
+            ? new CrawlInfoDto
+            {
                 Id = result.Id,
                 Status = result.Status,
                 Url = result.TargetUrl,
@@ -50,7 +52,8 @@ public class CrawlDataService
         var result = await _detailsRepository.GetCrawlDetailsAsync(crawlId, token);
 
         return result?
-            .Select(r => new CrawlDetailDto {
+            .Select(r => new CrawlDetailDto
+            {
                 Id = r.Id,
                 Address = r.Address,
                 SourceType = r.SourceType,
@@ -61,15 +64,17 @@ public class CrawlDataService
             }) ?? Array.Empty<CrawlDetailDto>();
     }
 
-    public async Task<int> AddCrawlInfo(CrawlInfoDto dto, CancellationToken token = default) {
+    public async Task<int> AddCrawlInfo(CrawlInfoDto dto, CancellationToken token = default)
+    {
         return await _infoRepository.InsertAsync(dto, token);
     }
 
-    public async Task SaveCrawlData(int crawlId, IEnumerable<CrawlItemDto> items, CancellationToken token = default) {
+    public async Task SaveCrawlData(int crawlId, IEnumerable<CrawlItemDto> items, CancellationToken token = default)
+    {
         await InsertCrawlDetailsAsync(crawlId, items, token);
         await UpdateCrawlInfoAsync(crawlId, token);
     }
-    
+
     private async Task InsertCrawlDetailsAsync(int crawlId, IEnumerable<CrawlItemDto> items, CancellationToken token)
     {
         await _detailsRepository.BulkInsertAsync(items.Select(i => new CrawlDetail
@@ -80,15 +85,15 @@ public class CrawlDataService
             SourceType = i.SourceType
         }), 100, token);
     }
-    
+
     private async Task UpdateCrawlInfoAsync(int id, CancellationToken token)
     {
         var entity = await _infoRepository.GetAsync(id, token);
         if (entity == null)
             throw new InvalidOperationException("Try to change missed crawl info occurred.");
-        
+
         entity.Status = CrawlStatus.Success;
-        
+
         await _infoRepository.UpdateAsync(entity, token);
-    }    
+    }
 }

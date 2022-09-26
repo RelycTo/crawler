@@ -1,6 +1,6 @@
 ﻿using Crawler.Infrastructure.Parsers;
 
-namespace Crawler.Tests.Crawler;
+namespace Crawler.Tests.InfrastructureTests;
 
 public class XmlParserTests
 {

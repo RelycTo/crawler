@@ -9,13 +9,19 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Crawler.Domain", "Crawler.D
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Crawler.Application", "Crawler.Application\Crawler.Application.csproj", "{872CE1A5-0A4C-4EEB-A136-47260BB3FB7B}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Crawler.Infrastructure", "Crawler.Infrastructure\Crawler.Infrastructure.csproj", "{857D151A-DE98-44C3-A1F5-747C313D5E57}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Crawler.Infrastructure.IoC", "Crawler.Infrastructure.IoC\Crawler.Infrastructure.IoC.csproj", "{857D151A-DE98-44C3-A1F5-747C313D5E57}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Crawler.Persistence", "Crawler.Persistence\Crawler.Persistence.csproj", "{F9266341-CC9B-4DBC-BFF3-8686F315536D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Crawler.Integration.MSSQL", "Crawler.Integration.MSSQL\Crawler.Integration.MSSQL.csproj", "{F9266341-CC9B-4DBC-BFF3-8686F315536D}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Crawler.Presentation", "Crawler.Presentation\Crawler.Presentation.csproj", "{E3E7C9B8-8C39-4383-B503-E05D4B1A8C9A}"
 EndProject
 Project("{9092AA53-FB77-4645-B42D-1CCCA6BD08BD}") = "Crawler.WebUI", "Crawler.WebUI\Crawler.WebUI.njsproj", "{D074B33C-8CEB-464D-9C71-74AE82E062BC}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infrastructures", "Infrastructures", "{97644873-CCB4-4D8A-A770-F8A3EE2A7D27}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Crawler.Infrastructure.Http", "Crawler.Infrastructure.Http\Crawler.Infrastructure.Http.csproj", "{949FA001-3C6C-44FE-A3DC-58FF1B8E03A7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Crawler.Infrastructure.Parsers", "Crawler.Infrastructure.Parsers\Crawler.Infrastructure.Parsers.csproj", "{29A5E413-E101-4888-B8F4-5C3F8131EC2D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -51,11 +57,24 @@ Global
 		{D074B33C-8CEB-464D-9C71-74AE82E062BC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D074B33C-8CEB-464D-9C71-74AE82E062BC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D074B33C-8CEB-464D-9C71-74AE82E062BC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{949FA001-3C6C-44FE-A3DC-58FF1B8E03A7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{949FA001-3C6C-44FE-A3DC-58FF1B8E03A7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{949FA001-3C6C-44FE-A3DC-58FF1B8E03A7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{949FA001-3C6C-44FE-A3DC-58FF1B8E03A7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{29A5E413-E101-4888-B8F4-5C3F8131EC2D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{29A5E413-E101-4888-B8F4-5C3F8131EC2D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{29A5E413-E101-4888-B8F4-5C3F8131EC2D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{29A5E413-E101-4888-B8F4-5C3F8131EC2D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {0AECEEBD-B175-49A3-88BC-39AA56D384B3}
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{857D151A-DE98-44C3-A1F5-747C313D5E57} = {97644873-CCB4-4D8A-A770-F8A3EE2A7D27}
+		{949FA001-3C6C-44FE-A3DC-58FF1B8E03A7} = {97644873-CCB4-4D8A-A770-F8A3EE2A7D27}
+		{29A5E413-E101-4888-B8F4-5C3F8131EC2D} = {97644873-CCB4-4D8A-A770-F8A3EE2A7D27}
 	EndGlobalSection
 EndGlobal

@@ -1,6 +1,5 @@
-using Crawler.Application.Models;
-using Crawler.Application.Services;
-using Crawler.Domain.Handlers;
+using Crawler.Application.Crawl;
+using Crawler.Application.Data;
 using Crawler.Presentation.Models;
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,15 +10,15 @@ namespace Crawler.Presentation.Controllers;
 public class CrawlInfoController : ControllerBase
 {
     private readonly CrawlDataService _dataService;
+    private readonly CrawlService _service;
     private readonly ILogger<CrawlInfoController> _logger;
-    private readonly ICrawlHandler<CrawlHandlerContext> _processHandler;
 
-    public CrawlInfoController(CrawlDataService dataService, ICrawlHandler<CrawlHandlerContext> processHandler,
+    public CrawlInfoController(CrawlDataService dataService, CrawlService service,
         ILogger<CrawlInfoController> logger)
     {
         _logger = logger;
         _dataService = dataService;
-        _processHandler = processHandler;
+        _service = service;
     }
 
     /// <summary>
@@ -34,15 +33,29 @@ public class CrawlInfoController : ControllerBase
     }
 
     /// <summary>
+    /// Gets <see cref="CrawlInfoDto"/> by Id.
+    /// </summary>
+    /// <param name="id">Identifier of crawl info</param>
+    /// <param name="token">Cancellation token</param>
+    /// <returns>Collection of <see cref="CrawlInfoDto"/></returns>
+    [HttpGet("{id:int}")]
+    public async Task<ActionResult<CrawlInfoDto>> GetCrawlInfoAsync(int id, CancellationToken token = default)
+    {
+        return await _dataService.GetCrawlInfoAsync(id, token);
+    }
+
+    /// <summary>
     /// Handle crawl process.
     /// </summary>
     /// <param name="request">Crawl request model</param>
     /// <param name="token">Cancellation toke</param>
     /// <returns></returns>
     [HttpPost]
-    public async Task ProcessAsync([FromBody] CrawlProcessRequest request, CancellationToken token = default)
+    public async Task<ActionResult<CrawlInfoDto>> CrawlAsync([FromBody] CrawlProcessRequest request,
+        CancellationToken token = default)
     {
-        var context = CrawlHandlerContext.Create(request.ProcessUri, request.TaskCount, request.SiteMapPageName);
-        await _processHandler.Handle(context, token);
+        var crawlInfo = await _service.RunAsync(request.Url, request.TaskCount, request.SiteMapPageName, token);
+
+        return CreatedAtAction(nameof(GetCrawlInfoAsync), new { id = crawlInfo.Id }, crawlInfo);
     }
 }

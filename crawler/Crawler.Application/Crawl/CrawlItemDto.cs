@@ -1,7 +1,7 @@
 ﻿using System.Net;
 using Crawler.Domain.Models.Enums;
 
-namespace Crawler.Application.Models;
+namespace Crawler.Application.Crawl;
 
 public class CrawlItemDto
 {
